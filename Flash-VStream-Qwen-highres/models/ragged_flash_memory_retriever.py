@@ -83,7 +83,7 @@ class RaggedFlashMemoryRetriever:
         candidates = []
         if len(self.centroids) == 0:
             return candidates
-        centroids = torch.stack(self.centroids, dim=0).to(device)
+        centroids = torch.stack([c.to(device=device) for c in self.centroids], dim=0)
         weights = torch.tensor(self.cluster_weight, device=device, dtype=centroids.dtype)
         num_anchors = min(self.num_anchors, centroids.shape[0])
         topk_idx = torch.topk(weights, k=num_anchors).indices.tolist()
@@ -200,11 +200,11 @@ class RaggedFlashMemoryRetriever:
 
         cluster_idx = -1
         if len(self.centroids) < self.num_anchors:
-            self.centroids.append(repr_vec.detach().clone())
+            self.centroids.append(repr_vec.detach().cpu().clone())
             self.cluster_weight.append(1.0)
             cluster_idx = len(self.centroids) - 1
         else:
-            centroids = torch.stack(self.centroids, dim=0).to(device)
+            centroids = torch.stack([c.to(device=device) for c in self.centroids], dim=0)
             sim = torch.matmul(F.normalize(centroids, dim=-1), F.normalize(repr_vec.unsqueeze(0), dim=-1).t()).squeeze(1)
             cluster_idx = int(torch.argmax(sim).item())
             self.centroids[cluster_idx] = ((1.0 - self.alpha) * self.centroids[cluster_idx].to(device) + self.alpha * repr_vec).detach().cpu()
