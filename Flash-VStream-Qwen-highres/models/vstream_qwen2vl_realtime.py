@@ -748,12 +748,12 @@ class FlashVStreamQwen2VLModel(Qwen2VLForConditionalGeneration):
         time_7 = time.perf_counter()
         return [time_0, time_1, time_2, time_3, time_4, time_5, time_6, time_7]
 
-    def prepare_realtime_inference(self, position_ids, visual_position_ids):
+    def prepare_realtime_inference(self, position_ids, visual_position_ids, query_embed=None):
         # print(f'In prepare_realtime_inference, position_ids={position_ids.shape}, visual_position_ids={visual_position_ids.shape}')
         assert self.use_video_streaming_mode
         logger = logging.getLogger(__name__ + '.prepare_realtime_inference')
         if self._is_ragged_mode():
-            selected_tokens, selected_meta, local_position_ids, stats = self.ragged_retriever.retrieve(query_embed=None)
+            selected_tokens, selected_meta, local_position_ids, stats = self.ragged_retriever.retrieve(query_embed=query_embed)
             assert selected_tokens.shape[0] <= self.flash_memory_budget_hard, f"selected tokens exceed hard budget: {selected_tokens.shape[0]} > {self.flash_memory_budget_hard}"
             full_position = position_ids[:, 0].clone()
             visual_mask = visual_position_ids[0] >= 0
@@ -861,7 +861,18 @@ class FlashVStreamQwen2VLModel(Qwen2VLForConditionalGeneration):
                 video_mask = input_ids == self.config.video_token_id
                 time_0 = time.perf_counter()
                 if video_mask.sum() > 0:
-                    video_embeds, position_ids = self.prepare_realtime_inference(position_ids, visual_position_ids)
+                    # Build query embedding from text token embeddings (already in hidden_size space).
+                    # Visual tokens stored in ragged_retriever are also in hidden_size space (post-merger),
+                    # so no additional projection is needed for alignment.
+                    # Using the mean of all text tokens as a basic query representation.
+                    # This is intentionally simple; more sophisticated approaches (e.g. weighting
+                    # by token position or using only instruction tokens) can improve retrieval quality.
+                    query_embed = None
+                    if self._is_ragged_mode():
+                        text_mask = ~video_mask
+                        if text_mask.any():
+                            query_embed = inputs_embeds[text_mask].mean(dim=0).detach()
+                    video_embeds, position_ids = self.prepare_realtime_inference(position_ids, visual_position_ids, query_embed=query_embed)
                     video_embeds = video_embeds.to(inputs_embeds.device)  # [N, dim]
                     inputs_embeds[video_mask] = video_embeds
                 time_1 = time.perf_counter()
