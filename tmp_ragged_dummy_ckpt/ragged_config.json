@@ -1,0 +1,7 @@
+{
+  "flash_memory_mode": "ragged",
+  "flash_memory_budget_target": 11520,
+  "flash_memory_budget_hard": 12000,
+  "flash_memory_rt": 0.3333,
+  "num_items": 10
+}

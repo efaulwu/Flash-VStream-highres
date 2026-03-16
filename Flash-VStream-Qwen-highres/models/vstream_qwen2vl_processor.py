@@ -317,6 +317,7 @@ class FlashVStreamQwen2VLProcessor(Qwen2VLProcessor):
         return_tensors: Optional[Union[str, TensorType]] = TensorType.PYTORCH,
         flash_memory_config=None,
         dummy_video_tokens=None,
+        video_visual_token_length_override: Optional[int] = None,
     ) -> BatchFeature:
         """
         override the __call__ method of Qwen2VLProcessor
@@ -355,9 +356,12 @@ class FlashVStreamQwen2VLProcessor(Qwen2VLProcessor):
             index = 0
             for i in range(len(text)):
                 while "<|video_pad|>" in text[i]:
-                    real_grid = get_real_grid_thw(video_grid_thw[index], flash_memory_config)
-                    spatial_real_grid = get_spatial_real_grid_thw(video_grid_thw[index], flash_memory_config)
-                    visual_embed_length = real_grid.prod() // 4 + spatial_real_grid.prod() // 4
+                    if video_visual_token_length_override is not None:
+                        visual_embed_length = int(video_visual_token_length_override)
+                    else:
+                        real_grid = get_real_grid_thw(video_grid_thw[index], flash_memory_config)
+                        spatial_real_grid = get_spatial_real_grid_thw(video_grid_thw[index], flash_memory_config)
+                        visual_embed_length = real_grid.prod() // 4 + spatial_real_grid.prod() // 4
                     # print(f'In preprocess, spatial_real_grid={spatial_real_grid}, real_grid={real_grid}, visual_embed_length={visual_embed_length}')
                     text[i] = text[i].replace(
                         "<|video_pad|>", "<|placeholder|>" * visual_embed_length, 1

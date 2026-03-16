@@ -1,0 +1,20 @@
+{
+  "dataset_json": "/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8_vis.json",
+  "frame_root": "/scratch/zwu24/datasets/LLaVA-Video-178K_fps1",
+  "sampling": {
+    "max_videos": 10,
+    "random_sample_videos": true,
+    "dataset_max_frames": 8,
+    "seed": 42
+  },
+  "experiments": [
+    {"name": "mem_base_norm", "utility_method": "norm", "clustering_method": "none", "diversity_method": "topk", "coverage_method": "none"},
+    {"name": "mem_cluster_grid", "utility_method": "norm", "clustering_method": "grid", "diversity_method": "topk", "coverage_method": "none"},
+    {"name": "mem_cluster_kmeans_xy", "utility_method": "norm", "clustering_method": "kmeans_xy", "diversity_method": "topk", "coverage_method": "none"},
+    {"name": "mem_div_mmr", "utility_method": "norm", "clustering_method": "none", "diversity_method": "mmr", "coverage_method": "none"},
+    {"name": "mem_cov_gridquota", "utility_method": "norm", "clustering_method": "none", "diversity_method": "topk", "coverage_method": "per_grid_quota"},
+    {"name": "mem_cluster_grid_div_mmr", "utility_method": "norm", "clustering_method": "grid", "diversity_method": "mmr", "coverage_method": "none"},
+    {"name": "mem_cluster_kmeansxy_div_mmr_cov_quota", "utility_method": "norm", "clustering_method": "kmeans_xy", "diversity_method": "mmr", "coverage_method": "per_grid_quota"},
+    {"name": "mem_util_rarity_cluster_grid_div_mmr", "utility_method": "rarity_within_frame", "clustering_method": "grid", "diversity_method": "mmr", "coverage_method": "none"}
+  ]
+}

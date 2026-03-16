@@ -1,0 +1,32 @@
+/home/zwu24/.local/lib/python3.8/site-packages/transformers/deepspeed.py:24: FutureWarning: transformers.deepspeed module is deprecated and will be removed in a future version. Please import deepspeed modules directly from transformers.integrations
+  warnings.warn(
+/home/zwu24/.local/lib/python3.8/site-packages/transformers/training_args.py:1545: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/vstream_qwen2vl_realtime.py:492: UserWarning: note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config
+  warnings.warn(f'note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config')
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+FlashVStreamQwen2VLModel has generative capabilities, as `prepare_inputs_for_generation` is explicitly overwritten. However, it doesn't directly inherit from `GenerationMixin`. From 👉v4.50👈 onwards, `PreTrainedModel` will NOT inherit from `GenerationMixin`, and this model will lose the ability to call `generate` and other related functions.
+  - If you're using `trust_remote_code=True`, you can get rid of this warning by loading the model with an auto class. See https://huggingface.co/docs/transformers/en/model_doc/auto#auto-classes
+  - If you are the owner of the model architecture code, please modify your model class such that it inherits from `GenerationMixin` (after `PreTrainedModel`, otherwise you'll get an exception).
+  - If you are not the owner of the model architecture class, please contact the model code owner to update it.
+You are attempting to use Flash Attention 2.0 without specifying a torch dtype. This might lead to unexpected behaviour
+`Qwen2VLRotaryEmbedding` can now be fully parameterized by passing the model config through the `config` argument. All other arguments will be removed in v4.46
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.96it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:01,  2.92it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:00<00:00,  3.57it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  3.89it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:01<00:00,  4.04it/s]
+Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+  0%|          | 0/8 [00:00<?, ?it/s]/usr/local/lib/python3.8/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+ 12%|█▎        | 1/8 [00:25<02:56, 25.26s/it]                                              12%|█▎        | 1/8 [00:25<02:56, 25.26s/it] 25%|██▌       | 2/8 [00:33<01:30, 15.11s/it]                                              25%|██▌       | 2/8 [00:33<01:30, 15.11s/it] 38%|███▊      | 3/8 [00:45<01:08, 13.79s/it]                                              38%|███▊      | 3/8 [00:45<01:08, 13.79s/it] 50%|█████     | 4/8 [00:59<00:55, 13.92s/it]                                              50%|█████     | 4/8 [00:59<00:55, 13.92s/it] 62%|██████▎   | 5/8 [01:13<00:41, 13.89s/it]                                              62%|██████▎   | 5/8 [01:13<00:41, 13.89s/it] 75%|███████▌  | 6/8 [01:21<00:23, 11.92s/it]                                              75%|███████▌  | 6/8 [01:21<00:23, 11.92s/it] 88%|████████▊ | 7/8 [01:33<00:11, 11.96s/it]                                              88%|████████▊ | 7/8 [01:33<00:11, 11.96s/it]100%|██████████| 8/8 [01:40<00:00, 10.39s/it]                                             100%|██████████| 8/8 [01:40<00:00, 10.39s/it]You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/vstream_qwen2vl_realtime.py:492: UserWarning: note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config
+  warnings.warn(f'note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config')
+                                             100%|██████████| 8/8 [01:52<00:00, 10.39s/it]100%|██████████| 8/8 [01:52<00:00, 14.03s/it]
+You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/vstream_qwen2vl_realtime.py:492: UserWarning: note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config
+  warnings.warn(f'note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config')

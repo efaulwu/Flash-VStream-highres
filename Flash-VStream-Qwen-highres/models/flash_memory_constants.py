@@ -5,4 +5,12 @@ DEFAULT_FLASH_MEMORY_CONFIG = dict(
     flash_memory_temporal_pca_dim=32,
     flash_memory_spatial_length=60,
     flash_memory_spatial_method='klarge_retrieve',
+    flash_memory_mode='ragged',
+    flash_memory_budget_target=11520,
+    flash_memory_budget_hard=12000,
+    flash_memory_rt=0.3333,
+    flash_memory_xbin=64,
+    flash_memory_ybin=64,
+    flash_memory_topM_items=10,
+    flash_memory_num_anchors=8,
 )

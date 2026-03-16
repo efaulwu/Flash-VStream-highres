@@ -44,9 +44,9 @@ import torch.nn.functional as F
 # Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 
-NUM_FRAMES          = 120        # number of input frames
-FRAME_H             = 1200       # original frame height (pixels)
-FRAME_W             = 1200       # original frame width  (pixels)
+NUM_FRAMES          = 10       # number of input frames
+FRAME_H             = 448      # original frame height (pixels)
+FRAME_W             = 448      # original frame width  (pixels)
 
 # Qwen2-VL patch / merge constants
 PATCH_SIZE          = 14
@@ -342,7 +342,7 @@ def parse_args():
         description="Pipeline test: Flash-VStream visual encoder, 1 GPU, no spatial pooling"
     )
     parser.add_argument(
-        "--model-path", type=str, default=None,
+        "--model-path", type=str, default="zhang9302002/Flash-VStream-Qwen-7b",
         help="Path to a Qwen2-VL / FlashVStream checkpoint (optional). "
              "If omitted, random weights are used."
     )

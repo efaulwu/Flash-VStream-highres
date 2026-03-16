@@ -39,6 +39,7 @@ from .compress_functions import (
 from .flash_memory_constants import (
     DEFAULT_FLASH_MEMORY_CONFIG,
 )
+from .ragged_flash_memory_retriever import RaggedFlashMemoryRetriever
 
 from torch.multiprocessing import Lock, Manager
 import logging
@@ -146,7 +147,7 @@ class FlashMemory(nn.Module):
         return x, new_thw
     
     """ Calc CSM memory, from temporal clustering """
-    def temporal_compress(self, x, thw, temporal_length, temporal_weights, temporal_indices):
+    def temporal_compress(self, x, thw, temporal_length, temporal_weights=None, temporal_indices=None):
         # grid_thw is [T/2, H/14, W/14]
         # x.shape is [grid_t x grid_h/2 x grid_w/2 x 2 x 2, 1280]
         t, h, w = thw
@@ -351,7 +352,16 @@ class FlashVStreamQwen2VisionTransformerPretrainedModel(Qwen2VLPreTrainedModel):
         if getattr(config, 'flash_memory_config', None) is None:
             warnings.warn(f'Qwen2VLVisionConfig.flash_memory_config is not set. Set it to default, sample 10000')
             config.flash_memory_config = DEFAULT_FLASH_MEMORY_CONFIG
-        self.flash_memory = FlashMemory(**config.flash_memory_config)
+        flash_cfg = config.flash_memory_config
+        flash_memory_kwargs = {
+            'flash_memory_temporal_length': flash_cfg['flash_memory_temporal_length'],
+            'flash_memory_temporal_method': flash_cfg['flash_memory_temporal_method'],
+            'flash_memory_temporal_poolsize': flash_cfg['flash_memory_temporal_poolsize'],
+            'flash_memory_temporal_pca_dim': flash_cfg['flash_memory_temporal_pca_dim'],
+            'flash_memory_spatial_length': flash_cfg['flash_memory_spatial_length'],
+            'flash_memory_spatial_method': flash_cfg['flash_memory_spatial_method'],
+        }
+        self.flash_memory = FlashMemory(**flash_memory_kwargs)
         self.merger = PatchMerger(dim=config.hidden_size, context_dim=config.embed_dim)
 
     def get_dtype(self) -> torch.dtype:
@@ -488,7 +498,15 @@ class FlashVStreamQwen2VLConfig(Qwen2VLConfig):
         flash_memory_temporal_poolsize,
         flash_memory_temporal_pca_dim,
         flash_memory_spatial_length,
-        flash_memory_spatial_method
+        flash_memory_spatial_method,
+        flash_memory_mode='ragged',
+        flash_memory_budget_target=11520,
+        flash_memory_budget_hard=12000,
+        flash_memory_rt=0.3333,
+        flash_memory_xbin=64,
+        flash_memory_ybin=64,
+        flash_memory_topM_items=10,
+        flash_memory_num_anchors=8,
     ):
         self.vision_config.flash_memory_config = dict(
             flash_memory_temporal_length=flash_memory_temporal_length,
@@ -497,6 +515,14 @@ class FlashVStreamQwen2VLConfig(Qwen2VLConfig):
             flash_memory_temporal_pca_dim=flash_memory_temporal_pca_dim,
             flash_memory_spatial_length=flash_memory_spatial_length,
             flash_memory_spatial_method=flash_memory_spatial_method,
+            flash_memory_mode=flash_memory_mode,
+            flash_memory_budget_target=flash_memory_budget_target,
+            flash_memory_budget_hard=flash_memory_budget_hard,
+            flash_memory_rt=flash_memory_rt,
+            flash_memory_xbin=flash_memory_xbin,
+            flash_memory_ybin=flash_memory_ybin,
+            flash_memory_topM_items=flash_memory_topM_items,
+            flash_memory_num_anchors=flash_memory_num_anchors,
         )
         print(f'Set flash_memory_config to {self.vision_config.flash_memory_config}')
 
@@ -524,9 +550,50 @@ class FlashVStreamQwen2VLModel(Qwen2VLForConditionalGeneration):
         if getattr(config.vision_config, 'flash_memory_config', None):
             print(f'FlashMemory config:\n{config.vision_config.flash_memory_config}')
 
+        self.logger = logging.getLogger(__name__ + '.FlashVStreamQwen2VLModel')
         self.use_video_streaming_model = False
+        self.use_video_streaming_mode = False
         self.video_embedding_memory = None  
-        self.video_embedding_mem_lock = Lock() 
+        self.video_embedding_mem_lock = Lock()
+
+        fm_cfg = getattr(config.vision_config, 'flash_memory_config', {}) or {}
+        self.flash_memory_mode = fm_cfg.get('flash_memory_mode', 'grid')
+        self.flash_memory_budget_target = int(fm_cfg.get('flash_memory_budget_target', 11520))
+        self.flash_memory_budget_hard = int(fm_cfg.get('flash_memory_budget_hard', 12000))
+        self.flash_memory_rt = float(fm_cfg.get('flash_memory_rt', 0.3333))
+        self.flash_memory_xbin = int(fm_cfg.get('flash_memory_xbin', 64))
+        self.flash_memory_ybin = int(fm_cfg.get('flash_memory_ybin', 64))
+        self.flash_memory_topM_items = int(fm_cfg.get('flash_memory_topM_items', 10))
+        self.flash_memory_num_anchors = int(fm_cfg.get('flash_memory_num_anchors', 8))
+
+        self.ragged_retriever = RaggedFlashMemoryRetriever(
+            dim=config.hidden_size,
+            budget_target=self.flash_memory_budget_target,
+            budget_hard=self.flash_memory_budget_hard,
+            r_t=self.flash_memory_rt,
+            xbin=self.flash_memory_xbin,
+            ybin=self.flash_memory_ybin,
+            topM_items=self.flash_memory_topM_items,
+            num_anchors=self.flash_memory_num_anchors,
+        )
+
+    def _is_ragged_mode(self):
+        return getattr(self, 'flash_memory_mode', 'grid') == 'ragged'
+
+    def _gpu_mem_stats(self):
+        if not torch.cuda.is_available():
+            return {
+                'cuda': False,
+                'allocated_mb': 0.0,
+                'reserved_mb': 0.0,
+                'max_allocated_mb': 0.0,
+            }
+        return {
+            'cuda': True,
+            'allocated_mb': torch.cuda.memory_allocated() / (1024 ** 2),
+            'reserved_mb': torch.cuda.memory_reserved() / (1024 ** 2),
+            'max_allocated_mb': torch.cuda.max_memory_allocated() / (1024 ** 2),
+        }
 
     def get_video_embedding_memory_cuda_list(self):
         logger = logging.getLogger(__name__ + '.get_video_embedding_memory_cuda_list')
@@ -564,6 +631,58 @@ class FlashVStreamQwen2VLModel(Qwen2VLForConditionalGeneration):
         time_2 = time.perf_counter()
         thw = video_grid_thw[0]
         t, h, w = thw.tolist()
+
+        if self._is_ragged_mode():
+            if small_grid_thw is not None:
+                hi_raw, lo_raw = torch.split(x, [grid_thw.prod(), small_grid_thw.prod()])
+            else:
+                hi_raw = x
+                lo_raw = x
+
+            hi_tokens = self.visual.merger(hi_raw.unsqueeze(0))
+            if hi_tokens.ndim == 3 and hi_tokens.shape[0] == 1:
+                hi_tokens = hi_tokens[0]
+            lo_tokens = self.visual.merger(lo_raw.unsqueeze(0))
+            if lo_tokens.ndim == 3 and lo_tokens.shape[0] == 1:
+                lo_tokens = lo_tokens[0]
+
+            token_meta = {
+                'chunk_id': int(start_idx),
+                't0': int(start_idx),
+                't_len': int(t),
+                'src_res_h': int(h * 14),
+                'src_res_w': int(w * 14),
+                'x_norm': None,
+                'y_norm': None,
+            }
+            update_stats = self.ragged_retriever.update(
+                hi_tokens=hi_tokens,
+                lo_tokens=lo_tokens,
+                token_meta=token_meta,
+            )
+            mem_stats = self._gpu_mem_stats()
+            self.logger.info(
+                '[ragged-update] chunk_id=%s res=%sx%s hi_tokens_n=%s lo_tokens_n=%s cluster_idx=%s cluster_weight_top5=%s update_ms=%.3f allocated=%.2fMB reserved=%.2fMB max_alloc=%.2fMB',
+                update_stats['chunk_id'],
+                token_meta['src_res_h'],
+                token_meta['src_res_w'],
+                update_stats['hi_tokens_n'],
+                update_stats['lo_tokens_n'],
+                update_stats['cluster_idx'],
+                update_stats['cluster_weight_top5'],
+                update_stats['update_ms'],
+                mem_stats['allocated_mb'],
+                mem_stats['reserved_mb'],
+                mem_stats['max_allocated_mb'],
+            )
+            with self.video_embedding_mem_lock:
+                self.video_embedding_memory = {
+                    'mode': 'ragged',
+                    'latest_update_stats': update_stats,
+                    'latest_mem_stats': mem_stats,
+                }
+            time_3 = time.perf_counter()
+            return [time_0, time_1, time_2, time_3]
 
         if small_grid_thw is not None:
             x, small_x = torch.split(x, [grid_thw.prod(), small_grid_thw.prod()])
@@ -633,6 +752,49 @@ class FlashVStreamQwen2VLModel(Qwen2VLForConditionalGeneration):
         # print(f'In prepare_realtime_inference, position_ids={position_ids.shape}, visual_position_ids={visual_position_ids.shape}')
         assert self.use_video_streaming_mode
         logger = logging.getLogger(__name__ + '.prepare_realtime_inference')
+        if self._is_ragged_mode():
+            selected_tokens, selected_meta, local_position_ids, stats = self.ragged_retriever.retrieve(query_embed=None)
+            assert selected_tokens.shape[0] <= self.flash_memory_budget_hard, f"selected tokens exceed hard budget: {selected_tokens.shape[0]} > {self.flash_memory_budget_hard}"
+            full_position = position_ids[:, 0].clone()
+            visual_mask = visual_position_ids[0] >= 0
+            visual_indices = torch.nonzero(visual_mask, as_tuple=False).squeeze(1)
+            target_n = int(visual_indices.shape[0])
+            if selected_tokens.shape[0] > target_n:
+                selected_tokens = selected_tokens[:target_n]
+                local_position_ids = local_position_ids[:, :, :target_n]
+            elif selected_tokens.shape[0] < target_n:
+                pad_n = target_n - selected_tokens.shape[0]
+                if pad_n > 0:
+                    pad_tokens = torch.zeros(pad_n, selected_tokens.shape[1], dtype=selected_tokens.dtype, device=selected_tokens.device)
+                    selected_tokens = torch.cat([selected_tokens, pad_tokens], dim=0)
+                    pad_pos = torch.zeros(3, 1, pad_n, dtype=local_position_ids.dtype, device=local_position_ids.device)
+                    local_position_ids = torch.cat([local_position_ids, pad_pos], dim=2)
+
+            if target_n > 0:
+                visual_start_pos = int(visual_indices[0].item())
+                visual_start_id = int(full_position[0, visual_start_pos].item())
+                full_position[:, visual_indices] = visual_start_id + local_position_ids[:, 0, :target_n]
+
+            mem_stats = self._gpu_mem_stats()
+            self.logger.info(
+                '[ragged-retrieve] anchors=%s candidate_chunks=%s N_tem=%s N_spa=%s N_sel=%s B_target=%s B_hard=%s r_t=%.4f anchor_select_ms=%.3f packing_ms=%.3f retrieve_ms=%.3f allocated=%.2fMB reserved=%.2fMB max_alloc=%.2fMB',
+                stats.get('anchors', 0),
+                stats.get('candidate_chunks', 0),
+                stats.get('N_tem', 0),
+                stats.get('N_spa', 0),
+                stats.get('N_sel', 0),
+                stats.get('budget_target', self.flash_memory_budget_target),
+                stats.get('budget_hard', self.flash_memory_budget_hard),
+                stats.get('rt', self.flash_memory_rt),
+                stats.get('anchor_select_ms', 0.0),
+                stats.get('packing_ms', 0.0),
+                stats.get('retrieve_ms', 0.0),
+                mem_stats['allocated_mb'],
+                mem_stats['reserved_mb'],
+                mem_stats['max_allocated_mb'],
+            )
+            return selected_tokens, full_position.unsqueeze(1)
+
         tem_x, tem_thw, tem_weights, tem_timestamp, spa_x, spa_thw, spa_positions, x, thw, small_x, small_thw, video_embeds, video_embeds_shape = self.get_video_embedding_memory_cuda_list()
         tem_positions = tem_timestamp.round().long()
         # logger.info(f'Read memory, tem_thw={tem_thw}, spa_thw={spa_thw}, thw={thw}, small_thw={small_thw}, video_embeds={video_embeds.shape}')

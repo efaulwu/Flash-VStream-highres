@@ -1,0 +1,122 @@
+[INFO] job_id=6533508 host=gpu014.orc.gmu.edu start=2026-03-09T04:28:24-04:00
+[INFO] repo=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres
+[INFO] container=/scratch/zwu24/singularity_sifs/qwen.sif
+[[bash:71] /opt/ohpc/admin/lmod/lmod/libexec/lmod bash list
+
+Currently Loaded Modules:
+  1) use.own               7) zlib/1.2.11-2y     13) singularity/3.7.1
+  2) autotools             8) openmpi4/4.1.2-4a  14) glibc/2.28-fn
+  3) prun/2.0              9) bzip2/1.0.8-no     15) ucx/1.16.0-xg
+  4) hosts/hopper         10) readline/8.1-ky    16) libfabric/1.10.1
+  5) slurm-tools/2023-09  11) sqlite/3.37.1-6s   17) hwloc/2.1.0
+  6) gnu10/10.3.0-ya      12) python/3.10.1-5r   18) cuda/12.2.0.1
+
+ 
+
+[bash:71] eval 'MODULEPATH=/opt/sw/singularity/modules:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0-openmpi-4.1.2:/opt/sw/spack/moduledeps/linux-rhel8-x86_64/gnu-10.3.0-openmpi-4.1.2:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0:/opt/sw/spack/modules/lmod-2024/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/spack/modules/lmod/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/other/modulefiles:/opt/ohpc/pub/modulefiles:/etc/modulefiles/Core:/opt/ohpc/admin/lmod/8.2.10/modulefiles/Core:/home/zwu24/privatemodules;' export 'MODULEPATH;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImdudTEwIixbIm1waSJdPSJvcGVubXBpNCIsfSxtVD17YXV0b3Rvb2xzPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvYXV0b3Rvb2xzLmx1YSIsWyJmdWxsTmFtZSJdPSJhdXRvdG9vbHMiLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhdXRvdG9vbHMiLH0sYnppcDI9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4z;' export '_ModuleTable001_;' '_ModuleTable002_=LjAvYnppcDIvMS4wLjgtbm8ubHVhIixbImZ1bGxOYW1lIl09ImJ6aXAyLzEuMC44LW5vIixbImxvYWRPcmRlciJdPTkscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImJ6aXAyLzEuMC44LW5vIix9LGN1ZGE9e1siZm4iXT0iL29wdC9zdy9vdGhlci9tb2R1bGVmaWxlcy9jdWRhLzEyLjIuMC4xLmx1YSIsWyJmdWxsTmFtZSJdPSJjdWRhLzEyLjIuMC4xIixbImxvYWRPcmRlciJdPTE4LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImN1ZGEvMTIuMiIsfSxnbGliYz17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0y;' export '_ModuleTable002_;' '_ModuleTable003_=MDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL2dsaWJjLzIuMjgtZm4ubHVhIixbImZ1bGxOYW1lIl09ImdsaWJjLzIuMjgtZm4iLFsibG9hZE9yZGVyIl09MTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdsaWJjLzIuMjgtZm4iLH0sZ251MTA9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9nbnUxMC8xMC4zLjAteWEubHVhIixbImZ1bGxOYW1lIl09ImdudTEwLzEwLjMuMC15YSIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdudTEwIix9LGhvc3RzPXtbImZuIl09;' export '_ModuleTable003_;' '_ModuleTable004_=Ii9ldGMvbW9kdWxlZmlsZXMvQ29yZS9ob3N0cy9ob3BwZXIiLFsiZnVsbE5hbWUiXT0iaG9zdHMvaG9wcGVyIixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iaG9zdHMvaG9wcGVyIix9LGh3bG9jPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvaHdsb2MvMi4xLjAubHVhIixbImZ1bGxOYW1lIl09Imh3bG9jLzIuMS4wIixbImxvYWRPcmRlciJdPTE3LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imh3bG9jLzIuMS4wIix9LGxpYmZhYnJpYz17WyJmbiJdPSIvb3B0L29ocGMvcHViL21vZHVsZWZpbGVzL2xpYmZh;' export '_ModuleTable004_;' '_ModuleTable005_=YnJpYy8xLjEwLjEubHVhIixbImZ1bGxOYW1lIl09ImxpYmZhYnJpYy8xLjEwLjEiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LG9wZW5tcGk0PXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL29wZW5tcGk0LzQuMS4yLTRhLmx1YSIsWyJmdWxsTmFtZSJdPSJvcGVubXBpNC80LjEuMi00YSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im9wZW5tcGk0Iix9LHBydW49e1siZm4iXT0iL29wdC9vaHBjL3B1;' export '_ModuleTable005_;' '_ModuleTable006_=Yi9tb2R1bGVmaWxlcy9wcnVuLzIuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHJ1bi8yLjAiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwcnVuIix9LHB5dGhvbj17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC9weXRob24vMy4xMC4xLTVyLmx1YSIsWyJmdWxsTmFtZSJdPSJweXRob24vMy4xMC4xLTVyIixbImxvYWRPcmRlciJdPTEyLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InB5dGhvbi8zLjEwIix9LHJlYWRsaW5lPXtbImZuIl09Ii9vcHQvc3cvc3Bh;' export '_ModuleTable006_;' '_ModuleTable007_=Y2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3JlYWRsaW5lLzguMS1reS5sdWEiLFsiZnVsbE5hbWUiXT0icmVhZGxpbmUvOC4xLWt5IixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJyZWFkbGluZS84LjEta3kiLH0sc2luZ3VsYXJpdHk9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9zaW5ndWxhcml0eS8zLjcuMS5sdWEiLFsiZnVsbE5hbWUiXT0ic2luZ3VsYXJpdHkvMy43LjEiLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5h;' export '_ModuleTable007_;' '_ModuleTable008_=bWUiXT0ic2luZ3VsYXJpdHkiLH0sWyJzbHVybS10b29scyJdPXtbImZuIl09Ii9vcHQvc3cvb3RoZXIvbW9kdWxlZmlsZXMvc2x1cm0tdG9vbHMvMjAyMy0wOSIsWyJmdWxsTmFtZSJdPSJzbHVybS10b29scy8yMDIzLTA5IixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic2x1cm0tdG9vbHMvMjAyMy0wOSIsfSxzcWxpdGU9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAvc3FsaXRlLzMuMzcuMS02cy5sdWEiLFsiZnVsbE5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInJl;' export '_ModuleTable008_;' '_ModuleTable009_=Zl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsfSx1Y3g9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QtMjAyNC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC91Y3gvMS4xNi4wLXhnLmx1YSIsWyJmdWxsTmFtZSJdPSJ1Y3gvMS4xNi4wLXhnIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InVjeCIsfSxbInVzZS5vd24iXT17WyJmbiJdPSIvb3B0L29ocGMvYWRtaW4vbG1vZC84LjIuMTAvbW9kdWxlZmlsZXMvQ29yZS91c2Uub3duLmx1YSIsWyJmdWxsTmFtZSJdPSJ1;' export '_ModuleTable009_;' '_ModuleTable010_=c2Uub3duIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idXNlLm93biIsfSx6bGliPXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3psaWIvMS4yLjExLTJ5Lmx1YSIsWyJmdWxsTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MyxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsfSx9LG1wYXRoQT17Ii9vcHQvc3cvc2luZ3VsYXJpdHkvbW9kdWxlcyIsIi9vcHQvc3cvb3RoZXIvbW9k;' export '_ModuleTable010_;' '_ModuleTable011_=dWxlZGVwcy9saW51eC1yaGVsOC14ODZfNjRfdjIvZ2NjLTEwLjMuMC1vcGVubXBpLTQuMS4yIiwiL29wdC9zdy9zcGFjay9tb2R1bGVkZXBzL2xpbnV4LXJoZWw4LXg4Nl82NC9nbnUtMTAuMy4wLW9wZW5tcGktNC4xLjIiLCIvb3B0L3N3L290aGVyL21vZHVsZWRlcHMvbGludXgtcmhlbDgteDg2XzY0X3YyL2djYy0xMC4zLjAiLCIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0yMDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wIiwiL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAiLCIvb3B0L3N3L290aGVyL21vZHVsZWZpbGVzIiwiL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcyIsIi9ldGMvbW9kdWxlZmlsZXMv;' export '_ModuleTable011_;' '_ModuleTable012_=Q29yZSIsIi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlIiwiL2hvbWUvend1MjQvcHJpdmF0ZW1vZHVsZXMiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL2V0Yy9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMiLH0=;' export '_ModuleTable012_;' '_ModuleTable_Sz_=12;' export '_ModuleTable_Sz_;'
+[[bash:71] MODULEPATH=/opt/sw/singularity/modules:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0-openmpi-4.1.2:/opt/sw/spack/moduledeps/linux-rhel8-x86_64/gnu-10.3.0-openmpi-4.1.2:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0:/opt/sw/spack/modules/lmod-2024/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/spack/modules/lmod/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/other/modulefiles:/opt/ohpc/pub/modulefiles:/etc/modulefiles/Core:/opt/ohpc/admin/lmod/8.2.10/modulefiles/Core:/home/zwu24/privatemodules
+[[bash:71] export MODULEPATH
+[[bash:71] _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImdudTEwIixbIm1waSJdPSJvcGVubXBpNCIsfSxtVD17YXV0b3Rvb2xzPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvYXV0b3Rvb2xzLmx1YSIsWyJmdWxsTmFtZSJdPSJhdXRvdG9vbHMiLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhdXRvdG9vbHMiLH0sYnppcDI9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4z
+[[bash:71] export _ModuleTable001_
+[[bash:71] _ModuleTable002_=LjAvYnppcDIvMS4wLjgtbm8ubHVhIixbImZ1bGxOYW1lIl09ImJ6aXAyLzEuMC44LW5vIixbImxvYWRPcmRlciJdPTkscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImJ6aXAyLzEuMC44LW5vIix9LGN1ZGE9e1siZm4iXT0iL29wdC9zdy9vdGhlci9tb2R1bGVmaWxlcy9jdWRhLzEyLjIuMC4xLmx1YSIsWyJmdWxsTmFtZSJdPSJjdWRhLzEyLjIuMC4xIixbImxvYWRPcmRlciJdPTE4LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImN1ZGEvMTIuMiIsfSxnbGliYz17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0y
+[[bash:71] export _ModuleTable002_
+[[bash:71] _ModuleTable003_=MDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL2dsaWJjLzIuMjgtZm4ubHVhIixbImZ1bGxOYW1lIl09ImdsaWJjLzIuMjgtZm4iLFsibG9hZE9yZGVyIl09MTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdsaWJjLzIuMjgtZm4iLH0sZ251MTA9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9nbnUxMC8xMC4zLjAteWEubHVhIixbImZ1bGxOYW1lIl09ImdudTEwLzEwLjMuMC15YSIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdudTEwIix9LGhvc3RzPXtbImZuIl09
+[[bash:71] export _ModuleTable003_
+[[bash:71] _ModuleTable004_=Ii9ldGMvbW9kdWxlZmlsZXMvQ29yZS9ob3N0cy9ob3BwZXIiLFsiZnVsbE5hbWUiXT0iaG9zdHMvaG9wcGVyIixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iaG9zdHMvaG9wcGVyIix9LGh3bG9jPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvaHdsb2MvMi4xLjAubHVhIixbImZ1bGxOYW1lIl09Imh3bG9jLzIuMS4wIixbImxvYWRPcmRlciJdPTE3LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imh3bG9jLzIuMS4wIix9LGxpYmZhYnJpYz17WyJmbiJdPSIvb3B0L29ocGMvcHViL21vZHVsZWZpbGVzL2xpYmZh
+[[bash:71] export _ModuleTable004_
+[[bash:71] _ModuleTable005_=YnJpYy8xLjEwLjEubHVhIixbImZ1bGxOYW1lIl09ImxpYmZhYnJpYy8xLjEwLjEiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LG9wZW5tcGk0PXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL29wZW5tcGk0LzQuMS4yLTRhLmx1YSIsWyJmdWxsTmFtZSJdPSJvcGVubXBpNC80LjEuMi00YSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im9wZW5tcGk0Iix9LHBydW49e1siZm4iXT0iL29wdC9vaHBjL3B1
+[[bash:71] export _ModuleTable005_
+[[bash:71] _ModuleTable006_=Yi9tb2R1bGVmaWxlcy9wcnVuLzIuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHJ1bi8yLjAiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwcnVuIix9LHB5dGhvbj17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC9weXRob24vMy4xMC4xLTVyLmx1YSIsWyJmdWxsTmFtZSJdPSJweXRob24vMy4xMC4xLTVyIixbImxvYWRPcmRlciJdPTEyLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InB5dGhvbi8zLjEwIix9LHJlYWRsaW5lPXtbImZuIl09Ii9vcHQvc3cvc3Bh
+[[bash:71] export _ModuleTable006_
+[[bash:71] _ModuleTable007_=Y2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3JlYWRsaW5lLzguMS1reS5sdWEiLFsiZnVsbE5hbWUiXT0icmVhZGxpbmUvOC4xLWt5IixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJyZWFkbGluZS84LjEta3kiLH0sc2luZ3VsYXJpdHk9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9zaW5ndWxhcml0eS8zLjcuMS5sdWEiLFsiZnVsbE5hbWUiXT0ic2luZ3VsYXJpdHkvMy43LjEiLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5h
+[[bash:71] export _ModuleTable007_
+[[bash:71] _ModuleTable008_=bWUiXT0ic2luZ3VsYXJpdHkiLH0sWyJzbHVybS10b29scyJdPXtbImZuIl09Ii9vcHQvc3cvb3RoZXIvbW9kdWxlZmlsZXMvc2x1cm0tdG9vbHMvMjAyMy0wOSIsWyJmdWxsTmFtZSJdPSJzbHVybS10b29scy8yMDIzLTA5IixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic2x1cm0tdG9vbHMvMjAyMy0wOSIsfSxzcWxpdGU9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAvc3FsaXRlLzMuMzcuMS02cy5sdWEiLFsiZnVsbE5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInJl
+[[bash:71] export _ModuleTable008_
+[[bash:71] _ModuleTable009_=Zl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsfSx1Y3g9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QtMjAyNC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC91Y3gvMS4xNi4wLXhnLmx1YSIsWyJmdWxsTmFtZSJdPSJ1Y3gvMS4xNi4wLXhnIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InVjeCIsfSxbInVzZS5vd24iXT17WyJmbiJdPSIvb3B0L29ocGMvYWRtaW4vbG1vZC84LjIuMTAvbW9kdWxlZmlsZXMvQ29yZS91c2Uub3duLmx1YSIsWyJmdWxsTmFtZSJdPSJ1
+[[bash:71] export _ModuleTable009_
+[[bash:71] _ModuleTable010_=c2Uub3duIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idXNlLm93biIsfSx6bGliPXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3psaWIvMS4yLjExLTJ5Lmx1YSIsWyJmdWxsTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MyxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsfSx9LG1wYXRoQT17Ii9vcHQvc3cvc2luZ3VsYXJpdHkvbW9kdWxlcyIsIi9vcHQvc3cvb3RoZXIvbW9k
+[[bash:71] export _ModuleTable010_
+[[bash:71] _ModuleTable011_=dWxlZGVwcy9saW51eC1yaGVsOC14ODZfNjRfdjIvZ2NjLTEwLjMuMC1vcGVubXBpLTQuMS4yIiwiL29wdC9zdy9zcGFjay9tb2R1bGVkZXBzL2xpbnV4LXJoZWw4LXg4Nl82NC9nbnUtMTAuMy4wLW9wZW5tcGktNC4xLjIiLCIvb3B0L3N3L290aGVyL21vZHVsZWRlcHMvbGludXgtcmhlbDgteDg2XzY0X3YyL2djYy0xMC4zLjAiLCIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0yMDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wIiwiL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAiLCIvb3B0L3N3L290aGVyL21vZHVsZWZpbGVzIiwiL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcyIsIi9ldGMvbW9kdWxlZmlsZXMv
+[[bash:71] export _ModuleTable011_
+[[bash:71] _ModuleTable012_=Q29yZSIsIi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlIiwiL2hvbWUvend1MjQvcHJpdmF0ZW1vZHVsZXMiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL2V0Yy9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMiLH0=
+[[bash:71] export _ModuleTable012_
+[[bash:71] _ModuleTable_Sz_=12
+[[bash:71] export _ModuleTable_Sz_
+[[bash:71] : -s sh
+[bash:71] eval
+Mon Mar  9 04:28:26 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:41:00.0 Off |                   On |
+| N/A   29C    P0            125W /  500W |     322MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |                     Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                       BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    2   0   0  |              38MiB / 40192MiB    | 42      0 |  3   0    2    0    0 |
+|                  |                 0MiB / 65535MiB  |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
++ PS4='[container:slurm_script:36] '
+[container:slurm_script:36] trap 'rc=$?; echo "[CONTAINER-ERROR] line=${LINENO} exit_code=${rc}"; exit ${rc}' ERR
+[container:slurm_script:36] export PYTHONUNBUFFERED=1
+[container:slurm_script:36] PYTHONUNBUFFERED=1
+[container:slurm_script:36] cd /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres
+[container:slurm_script:36] bash scripts/run_short_train_and_ragged_vis_in_container.sh
++ PS4='[${BASH_SOURCE##*/}:${LINENO}] '
+[run_short_train_and_ragged_vis_in_container.sh:5] trap 'rc=$?; echo "[ERROR] line=${LINENO} exit_code=${rc}"; exit ${rc}' ERR
+[run_short_train_and_ragged_vis_in_container.sh:6] export PYTHONUNBUFFERED=1
+[run_short_train_and_ragged_vis_in_container.sh:6] PYTHONUNBUFFERED=1
+[run_short_train_and_ragged_vis_in_container.sh:8] REPO=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres
+[run_short_train_and_ragged_vis_in_container.sh:9] MODEL_PATH=/scratch/zwu24/hfmodels/models--Qwen--Qwen2-VL-7B-Instruct/snapshots/eed13092ef92e448dd6875b2a00151bd3f7db0ac
+[run_short_train_and_ragged_vis_in_container.sh:10] FRAME_ROOT=/scratch/zwu24/datasets/LLaVA-Video-178K_fps1
+[run_short_train_and_ragged_vis_in_container.sh:11] DATA_JSON=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8_vis.json
+[run_short_train_and_ragged_vis_in_container.sh:12] VIS_DIR=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/ragged_present_vis_6533508
+[run_short_train_and_ragged_vis_in_container.sh:14] cd /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres
+[run_short_train_and_ragged_vis_in_container.sh:16] python3 -V
+Python 3.8.10
+[run_short_train_and_ragged_vis_in_container.sh:17] python3 -u scripts/ensure_peft.py
+peft_ready=True
+[run_short_train_and_ragged_vis_in_container.sh:19] python3 -u scripts/prepare_train_test_1fps.py --output-json /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8_vis.json --max-samples 8
+Wrote 8 samples to /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8_vis.json
+Sample limit mode: first-8
+Frame root: /scratch/zwu24/datasets/LLaVA-Video-178K_fps1
+Skip stats: non_dict=0, bad_video_field=0, duplicate_video=21, missing_or_invalid_decoded_frames=0
+First 5 videos:
+  - 0_30_s_academic_v0_1/academic_source/NextQA/1102/3564576864.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/203/Qh_rtJaCpXs/split_6.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/114/uFbAiNoQYQE/split_1.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/303/LaouC0RQoDg/split_8.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/105/uxEhH6MPH28/split_3.mp4
+[run_short_train_and_ragged_vis_in_container.sh:23] python3 -u scripts/ragged_memory_present_visualize.py --model-path /scratch/zwu24/hfmodels/models--Qwen--Qwen2-VL-7B-Instruct/snapshots/eed13092ef92e448dd6875b2a00151bd3f7db0ac --train-json /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8_vis.json --frame-root /scratch/zwu24/datasets/LLaVA-Video-178K_fps1 --out-dir /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/ragged_present_vis_6533508 --sample-index 0 --frames-per-chunk 8 --max-frames 32 --variant dynamic --target-present-tokens 11520 --device cuda
+Traceback (most recent call last):
+  File "scripts/ragged_memory_present_visualize.py", line 15, in <module>
+    from finetune_streaming_variants import (
+ModuleNotFoundError: No module named 'finetune_streaming_variants'
+[[run_short_train_and_ragged_vis_in_container.sh:23] rc=1
+[[run_short_train_and_ragged_vis_in_container.sh:23] echo '[ERROR] line=23 exit_code=1'
+[ERROR] line=23 exit_code=1
+[[run_short_train_and_ragged_vis_in_container.sh:23] exit 1
+[[container:slurm_script:36] rc=1
+[[container:slurm_script:36] echo '[CONTAINER-ERROR] line=7 exit_code=1'
+[CONTAINER-ERROR] line=7 exit_code=1
+[[container:slurm_script:36] exit 1
+[ERROR] line=44 exit_code=1

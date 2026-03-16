@@ -53,6 +53,8 @@ if [ $DO_TRAIN -eq 1 ]; then
         --lora_alpha 32 \
         --gradient_checkpointing \
         --deepspeed deepspeed/zero2_config.json \
+        --batch_size_shrink_factor 2 \
+        --python_gc_interval 50 \
         >> "${SAVE_PATH}/lora_qwen2vl_7b_${suffix}.log" 2>&1
 fi
 

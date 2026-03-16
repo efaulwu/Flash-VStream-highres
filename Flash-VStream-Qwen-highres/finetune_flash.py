@@ -1,17 +1,19 @@
-import os
-import re
+import gc
 import json
+import os
 import pathlib
+import re
 import torch
+from pathlib import Path
+from transformers import AutoConfig
 
-from models import (
+from models.vstream_qwen2vl_realtime import (
     FlashVStreamQwen2VLModel,
     FlashVStreamQwen2VLConfig,
-    FlashVStreamQwen2VLProcessor,
     get_real_grid_thw,
     get_spatial_real_grid_thw,
-    DEFAULT_FLASH_MEMORY_CONFIG
 )
+from models import FlashVStreamQwen2VLProcessor, DEFAULT_FLASH_MEMORY_CONFIG
 
 import transformers
 transformers.FlashVStreamQwen2VLModel = FlashVStreamQwen2VLModel
@@ -29,12 +31,27 @@ from transformers.trainer_callback import TrainerCallback
 from transformers.trainer_pt_utils import LabelSmoother
 from transformers.training_args import TrainingArguments
 from accelerate.utils import DistributedType
-from deepspeed import zero
-from deepspeed.runtime.zero.partition_parameters import ZeroParamStatus
+try:
+    from deepspeed import zero
+    from deepspeed.runtime.zero.partition_parameters import ZeroParamStatus
+except Exception:
+    # Compatible with deepspeed builds where `zero` is not exported at top level.
+    zero = None
+
+    class ZeroParamStatus:
+        NOT_AVAILABLE = None
 from dataclasses import dataclass, field
 
 from qwen_vl_utils import process_vision_info
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, AutoPeftModelForCausalLM
+try:
+    from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, AutoPeftModelForCausalLM
+    _PEFT_AVAILABLE = True
+except Exception:
+    LoraConfig = None
+    get_peft_model = None
+    prepare_model_for_kbit_training = None
+    AutoPeftModelForCausalLM = None
+    _PEFT_AVAILABLE = False
 
 IGNORE_TOKEN_ID = LabelSmoother.ignore_index
 
@@ -80,6 +97,18 @@ class TrainingArguments(transformers.TrainingArguments):
     gradient_checkpointing_kwargs: Optional[dict] = field(
         default_factory=lambda: {"use_reentrant": False}
     )
+    batch_size_shrink_factor: int = field(
+        default=1,
+        metadata={
+            "help": "Factor to divide the effective training batch size by. Applied to per-device batch size first, then gradient accumulation."
+        },
+    )
+    python_gc_interval: int = field(
+        default=0,
+        metadata={
+            "help": "Number of optimizer steps between explicit gc.collect / torch.cuda.empty_cache calls. 0 disables the periodic collection."
+        },
+    )
 
 
 @dataclass
@@ -97,7 +126,7 @@ class LoraArguments:
 
 
 def maybe_zero_3(param):
-    if hasattr(param, "ds_id"):
+    if hasattr(param, "ds_id") and zero is not None:
         assert param.ds_status == ZeroParamStatus.NOT_AVAILABLE
         with zero.GatheredParameters([param]):
             param = param.data.detach().cpu().clone()
@@ -135,8 +164,82 @@ def get_peft_state_maybe_zero_3(named_params, bias):
 local_rank = None
 
 def rank0_print(*args):
-    if local_rank == 0:
+    if local_rank in (0, -1, None):
         print(*args)
+
+
+def _video_to_frame_dir(video_rel: str) -> str:
+    if video_rel.lower().endswith(".mp4"):
+        return video_rel[:-4]
+    stem, _ = os.path.splitext(video_rel)
+    return stem
+
+
+def _resolve_frame_dir(video_root: str, video_rel: str) -> Optional[str]:
+    raw_path = os.path.join(video_root, video_rel)
+    candidates = [os.path.splitext(raw_path)[0]]
+    if raw_path.lower().endswith(".mp4"):
+        candidates.append(raw_path[:-4])
+
+    for candidate in candidates:
+        if os.path.isdir(candidate):
+            return candidate
+    return None
+
+
+def _has_decoded_frames(frame_dir: str) -> bool:
+    valid_exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+    try:
+        with os.scandir(frame_dir) as it:
+            for entry in it:
+                if not entry.is_file():
+                    continue
+                _, ext = os.path.splitext(entry.name)
+                if ext.lower() in valid_exts and entry.stat().st_size > 0:
+                    return True
+    except FileNotFoundError:
+        return False
+    return False
+
+
+def _filter_samples_with_frames(raw_data: List[dict], video_root: str) -> List[dict]:
+    kept: List[dict] = []
+    skipped_missing_video = 0
+    skipped_missing_dir = 0
+    skipped_empty_dir = 0
+
+    for item in raw_data:
+        if not isinstance(item, dict):
+            continue
+
+        video_rel = item.get("video")
+        if not isinstance(video_rel, str):
+            videos = item.get("videos", [])
+            if isinstance(videos, list) and len(videos) > 0 and isinstance(videos[0], str):
+                video_rel = videos[0] + ".mp4"
+                item["video"] = video_rel
+            else:
+                skipped_missing_video += 1
+                continue
+
+        frame_dir = _resolve_frame_dir(video_root, video_rel)
+        if frame_dir is None:
+            skipped_missing_dir += 1
+            continue
+
+        if not _has_decoded_frames(frame_dir):
+            skipped_empty_dir += 1
+            continue
+
+        kept.append(item)
+
+    rank0_print(
+        f"[dataset] total={len(raw_data)} kept={len(kept)} "
+        f"skip_missing_video={skipped_missing_video} "
+        f"skip_missing_frame_dir={skipped_missing_dir} "
+        f"skip_empty_or_invalid_frame_dir={skipped_empty_dir}"
+    )
+    return kept
 
 
 def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: str, bias="none"):
@@ -209,21 +312,43 @@ def preprocess(
     # Apply prompt templates
     input_ids, targets, visual_position_ids = [], [], []
     pixel_values_videos, video_grid_thw = [], []
+
+    def _frame_sort_key(frame_name: str):
+        stem = os.path.splitext(os.path.basename(frame_name))[0]
+        digits = re.findall(r"\d+", stem)
+        return int(digits[-1]) if digits else stem
+
+    def _resolve_video_or_frame_input(video_root: str, video_rel: str):
+        raw_path = os.path.join(video_root, video_rel)
+        candidates = []
+        no_ext = os.path.splitext(raw_path)[0]
+        candidates.append(no_ext)
+        if raw_path.lower().endswith(".mp4"):
+            candidates.append(raw_path[:-4])
+
+        frame_dir = None
+        for candidate in candidates:
+            if os.path.isdir(candidate):
+                frame_dir = candidate
+                break
+
+        if frame_dir is not None:
+            frame_paths = sorted(os.listdir(frame_dir), key=_frame_sort_key)
+            frame_paths = [os.path.join(frame_dir, p) for p in frame_paths]
+            return "frames", frame_paths
+
+        return "video", raw_path
     
     for i, source in enumerate(sources):
-        video_path = os.path.join(data_args.video_path, videos[i])
-        if 'frame' in video_path:
-            video_path = video_path[:-4]
-            frame_paths = os.listdir(video_path)
-            frame_paths = sorted(frame_paths, key=lambda x: int(x.split("_")[-1].split(".")[0]))
-            frame_paths = [os.path.join(video_path, frame_path) for frame_path in frame_paths]
+        input_mode, video_input = _resolve_video_or_frame_input(data_args.video_path, videos[i])
+        if input_mode == "frames":
             messages = [
                 {
                     "role": "user",
                     "content": [
                         {
                             "type": "video",
-                            "video": frame_paths,
+                            "video": video_input,
                             "fps": data_args.fps,
                             "max_frames": data_args.max_frames,
                             **({"max_pixels": data_args.max_pixels} if data_args.max_pixels > 0 else {}),
@@ -255,7 +380,7 @@ def preprocess(
                     "content": [
                         {
                             "type": "video",
-                            "video": video_path,
+                            "video": video_input,
                             "fps": data_args.fps,
                             "max_frames": data_args.max_frames,
                             **({"max_pixels": data_args.max_pixels} if data_args.max_pixels > 0 else {}),
@@ -439,6 +564,11 @@ def make_supervised_data_module(
     rank0_print("Loading data...")
 
     train_json = json.load(open(data_args.data_path, "r"))
+    train_json = _filter_samples_with_frames(train_json, data_args.video_path)
+    if len(train_json) == 0:
+        raise RuntimeError(
+            f"No valid training samples remain after frame filtering. data_path={data_args.data_path}, video_path={data_args.video_path}"
+        )
     train_dataset = dataset_cls(train_json, tokenizer=tokenizer, processor=processor, max_len=max_len, data_args=data_args, flash_memory_config=flash_memory_config)
     rank0_print(f"Training data loaded, length={len(train_dataset)}")
 
@@ -468,7 +598,8 @@ class CustomTrainer(Trainer):
         else:
             labels = None
         # prepare attention_mask, m-rope, etc
-        inputs = model.module.prepare_inputs_for_training(**inputs)
+        train_model = model.module if hasattr(model, "module") else model
+        inputs = train_model.prepare_inputs_for_training(**inputs)
 
         outputs = model(**inputs)
         # Save past state if it exists
@@ -498,6 +629,32 @@ class CustomTrainer(Trainer):
         return (loss, outputs) if return_outputs else loss
 
 
+class MemoryCleanupCallback(TrainerCallback):
+    """Periodically run Python GC and release CUDA caches to fight host OOM."""
+
+    def __init__(self, step_interval: int):
+        self.step_interval = max(1, step_interval)
+
+    def on_step_end(self, args, state, control, **kwargs):
+        if self.step_interval <= 0:
+            return control
+        if state.global_step == 0:
+            return control
+        if state.global_step % self.step_interval != 0:
+            return control
+
+        freed = gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+        local_rank = getattr(args, "local_rank", -1)
+        if local_rank in (0, -1, None):
+            print(
+                f"[memory-gc] step={state.global_step} interval={self.step_interval} freed_objects={freed}"
+            )
+        return control
+
+
 
 def train():
     global local_rank
@@ -517,13 +674,53 @@ def train():
 
     local_rank = training_args.local_rank
 
+    shrink_factor = max(1, getattr(training_args, "batch_size_shrink_factor", 1))
+    if shrink_factor > 1:
+        shrink_applied = False
+        if training_args.per_device_train_batch_size > 1:
+            new_train_batch = max(1, training_args.per_device_train_batch_size // shrink_factor)
+            if new_train_batch < training_args.per_device_train_batch_size:
+                rank0_print(
+                    f"[main] batch_size_shrink_factor={shrink_factor} -> per_device_train_batch_size {training_args.per_device_train_batch_size} -> {new_train_batch}"
+                )
+                training_args.per_device_train_batch_size = new_train_batch
+                if hasattr(training_args, "per_device_eval_batch_size") and training_args.per_device_eval_batch_size:
+                    training_args.per_device_eval_batch_size = max(
+                        1, training_args.per_device_eval_batch_size // shrink_factor
+                    )
+                shrink_applied = True
+        if not shrink_applied and training_args.gradient_accumulation_steps > 1:
+            new_grad_acc = max(1, training_args.gradient_accumulation_steps // shrink_factor)
+            if new_grad_acc < training_args.gradient_accumulation_steps:
+                rank0_print(
+                    f"[main] batch_size_shrink_factor={shrink_factor} -> gradient_accumulation_steps {training_args.gradient_accumulation_steps} -> {new_grad_acc}"
+                )
+                training_args.gradient_accumulation_steps = new_grad_acc
+                shrink_applied = True
+        if not shrink_applied:
+            rank0_print(
+                f"[main] batch_size_shrink_factor={shrink_factor} had no effect (already at minimal micro-batch)."
+            )
+
     # Load model
+    rank0_print(f"[main] model_name_or_path={model_args.model_name_or_path}")
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
     processor = FlashVStreamQwen2VLProcessor.from_pretrained(model_args.model_name_or_path)
-    config = FlashVStreamQwen2VLConfig.from_pretrained(
-        model_args.model_name_or_path, 
-        trust_remote_code=True,
-    )
+    base_config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
+    base_model_type = getattr(base_config, "model_type", "unknown")
+    if base_model_type != "qwen2_vl":
+        raise RuntimeError(
+            f"Expected official Qwen2-VL checkpoint (model_type=qwen2_vl), but got model_type={base_model_type}."
+        )
+    rank0_print(f"[main] Official Qwen checkpoint verified: model_type={base_model_type}")
+
+    config_dict = base_config.to_dict()
+    config_dict["model_type"] = "flash_vstream_qwen2_vl"
+    vision_cfg = config_dict.get("vision_config", {})
+    if isinstance(vision_cfg, dict):
+        vision_cfg["model_type"] = "qwen2_vl"
+        config_dict["vision_config"] = vision_cfg
+    config = FlashVStreamQwen2VLConfig.from_dict(config_dict)
     flash_memory_config = dict(
         flash_memory_temporal_length=model_args.flash_memory_temporal_length,
         flash_memory_temporal_method=model_args.flash_memory_temporal_method,
@@ -540,6 +737,19 @@ def train():
         torch_dtype=torch.bfloat16 if training_args.bf16 else torch.float16,
         attn_implementation="flash_attention_2" if model_args.use_flash_attn else "eager",
     )
+    rank0_print("[main] FlashVStream model weights loaded from official Qwen checkpoint path.")
+    retriever = getattr(model, "ragged_retriever", None)
+    if retriever is None:
+        visual_module = getattr(model, "visual", None)
+        if visual_module is None and hasattr(model, "model"):
+            visual_module = getattr(model.model, "visual", None)
+        retriever = getattr(getattr(visual_module, "flash_memory", None), "ragged_retriever", None)
+    if retriever is None:
+        raise RuntimeError(
+            "Expected realtime model with RaggedFlashMemoryRetriever, but ragged_retriever was not found."
+        )
+    if local_rank in (0, -1, None):
+        print(f"[main] Ragged retriever backend active: {type(retriever).__name__}")
 
     target_modules = []
 
@@ -554,6 +764,8 @@ def train():
     lora_args.lora_target_modules = target_modules
 
     if training_args.use_lora:
+        if not _PEFT_AVAILABLE:
+            raise RuntimeError("PEFT is required for --use_lora but is not installed in the current environment.")
         if lora_args.q_lora or "chat" in model_args.model_name_or_path.lower():
             modules_to_save = None
         else:
@@ -582,11 +794,19 @@ def train():
         tokenizer=tokenizer, processor=processor, data_args=data_args, max_len=training_args.model_max_length, flash_memory_config=flash_memory_config
     )
 
+    callbacks: List[TrainerCallback] = []
+    if getattr(training_args, "python_gc_interval", 0) > 0:
+        callbacks.append(MemoryCleanupCallback(training_args.python_gc_interval))
+        rank0_print(
+            f"[main] Enabled periodic Python GC every {training_args.python_gc_interval} steps"
+        )
+
     # Start trainer
     trainer = CustomTrainer(
         model=model, 
         tokenizer=tokenizer, 
         args=training_args,
+        callbacks=callbacks if callbacks else None,
         **data_module,
     )
     print(f'rank:{local_rank}, start training')

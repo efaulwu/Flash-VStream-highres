@@ -1,0 +1,2 @@
+[device] using device=cuda cuda_available=True cuda_count=1
+[batch] done experiments=1

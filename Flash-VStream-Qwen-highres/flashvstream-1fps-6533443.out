@@ -1,0 +1,250 @@
+[INFO] job_id=6533443 host=gpu022.orc.gmu.edu start=2026-03-09T02:40:19-04:00
+[INFO] repo=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres
+[INFO] out_dir=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/train_test_1fps_6533443
+[INFO] model_path=/scratch/zwu24/hfmodels/models--Qwen--Qwen2-VL-7B-Instruct/snapshots/eed13092ef92e448dd6875b2a00151bd3f7db0ac
+[[bash:71] /opt/ohpc/admin/lmod/lmod/libexec/lmod bash list
+
+Currently Loaded Modules:
+  1) use.own               7) zlib/1.2.11-2y     13) singularity/3.7.1
+  2) autotools             8) openmpi4/4.1.2-4a  14) glibc/2.28-fn
+  3) prun/2.0              9) bzip2/1.0.8-no     15) ucx/1.16.0-xg
+  4) hosts/hopper         10) readline/8.1-ky    16) libfabric/1.10.1
+  5) slurm-tools/2023-09  11) sqlite/3.37.1-6s   17) hwloc/2.1.0
+  6) gnu10/10.3.0-ya      12) python/3.10.1-5r   18) cuda/12.2.0.1
+
+ 
+
+[bash:71] eval 'MODULEPATH=/opt/sw/singularity/modules:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0-openmpi-4.1.2:/opt/sw/spack/moduledeps/linux-rhel8-x86_64/gnu-10.3.0-openmpi-4.1.2:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0:/opt/sw/spack/modules/lmod-2024/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/spack/modules/lmod/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/other/modulefiles:/opt/ohpc/pub/modulefiles:/etc/modulefiles/Core:/opt/ohpc/admin/lmod/8.2.10/modulefiles/Core:/home/zwu24/privatemodules;' export 'MODULEPATH;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImdudTEwIixbIm1waSJdPSJvcGVubXBpNCIsfSxtVD17YXV0b3Rvb2xzPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvYXV0b3Rvb2xzLmx1YSIsWyJmdWxsTmFtZSJdPSJhdXRvdG9vbHMiLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhdXRvdG9vbHMiLH0sYnppcDI9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4z;' export '_ModuleTable001_;' '_ModuleTable002_=LjAvYnppcDIvMS4wLjgtbm8ubHVhIixbImZ1bGxOYW1lIl09ImJ6aXAyLzEuMC44LW5vIixbImxvYWRPcmRlciJdPTkscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImJ6aXAyLzEuMC44LW5vIix9LGN1ZGE9e1siZm4iXT0iL29wdC9zdy9vdGhlci9tb2R1bGVmaWxlcy9jdWRhLzEyLjIuMC4xLmx1YSIsWyJmdWxsTmFtZSJdPSJjdWRhLzEyLjIuMC4xIixbImxvYWRPcmRlciJdPTE4LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImN1ZGEvMTIuMiIsfSxnbGliYz17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0y;' export '_ModuleTable002_;' '_ModuleTable003_=MDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL2dsaWJjLzIuMjgtZm4ubHVhIixbImZ1bGxOYW1lIl09ImdsaWJjLzIuMjgtZm4iLFsibG9hZE9yZGVyIl09MTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdsaWJjLzIuMjgtZm4iLH0sZ251MTA9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9nbnUxMC8xMC4zLjAteWEubHVhIixbImZ1bGxOYW1lIl09ImdudTEwLzEwLjMuMC15YSIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdudTEwIix9LGhvc3RzPXtbImZuIl09;' export '_ModuleTable003_;' '_ModuleTable004_=Ii9ldGMvbW9kdWxlZmlsZXMvQ29yZS9ob3N0cy9ob3BwZXIiLFsiZnVsbE5hbWUiXT0iaG9zdHMvaG9wcGVyIixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iaG9zdHMvaG9wcGVyIix9LGh3bG9jPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvaHdsb2MvMi4xLjAubHVhIixbImZ1bGxOYW1lIl09Imh3bG9jLzIuMS4wIixbImxvYWRPcmRlciJdPTE3LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imh3bG9jLzIuMS4wIix9LGxpYmZhYnJpYz17WyJmbiJdPSIvb3B0L29ocGMvcHViL21vZHVsZWZpbGVzL2xpYmZh;' export '_ModuleTable004_;' '_ModuleTable005_=YnJpYy8xLjEwLjEubHVhIixbImZ1bGxOYW1lIl09ImxpYmZhYnJpYy8xLjEwLjEiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LG9wZW5tcGk0PXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL29wZW5tcGk0LzQuMS4yLTRhLmx1YSIsWyJmdWxsTmFtZSJdPSJvcGVubXBpNC80LjEuMi00YSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im9wZW5tcGk0Iix9LHBydW49e1siZm4iXT0iL29wdC9vaHBjL3B1;' export '_ModuleTable005_;' '_ModuleTable006_=Yi9tb2R1bGVmaWxlcy9wcnVuLzIuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHJ1bi8yLjAiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwcnVuIix9LHB5dGhvbj17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC9weXRob24vMy4xMC4xLTVyLmx1YSIsWyJmdWxsTmFtZSJdPSJweXRob24vMy4xMC4xLTVyIixbImxvYWRPcmRlciJdPTEyLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InB5dGhvbi8zLjEwIix9LHJlYWRsaW5lPXtbImZuIl09Ii9vcHQvc3cvc3Bh;' export '_ModuleTable006_;' '_ModuleTable007_=Y2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3JlYWRsaW5lLzguMS1reS5sdWEiLFsiZnVsbE5hbWUiXT0icmVhZGxpbmUvOC4xLWt5IixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJyZWFkbGluZS84LjEta3kiLH0sc2luZ3VsYXJpdHk9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9zaW5ndWxhcml0eS8zLjcuMS5sdWEiLFsiZnVsbE5hbWUiXT0ic2luZ3VsYXJpdHkvMy43LjEiLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5h;' export '_ModuleTable007_;' '_ModuleTable008_=bWUiXT0ic2luZ3VsYXJpdHkiLH0sWyJzbHVybS10b29scyJdPXtbImZuIl09Ii9vcHQvc3cvb3RoZXIvbW9kdWxlZmlsZXMvc2x1cm0tdG9vbHMvMjAyMy0wOSIsWyJmdWxsTmFtZSJdPSJzbHVybS10b29scy8yMDIzLTA5IixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic2x1cm0tdG9vbHMvMjAyMy0wOSIsfSxzcWxpdGU9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAvc3FsaXRlLzMuMzcuMS02cy5sdWEiLFsiZnVsbE5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInJl;' export '_ModuleTable008_;' '_ModuleTable009_=Zl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsfSx1Y3g9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QtMjAyNC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC91Y3gvMS4xNi4wLXhnLmx1YSIsWyJmdWxsTmFtZSJdPSJ1Y3gvMS4xNi4wLXhnIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InVjeCIsfSxbInVzZS5vd24iXT17WyJmbiJdPSIvb3B0L29ocGMvYWRtaW4vbG1vZC84LjIuMTAvbW9kdWxlZmlsZXMvQ29yZS91c2Uub3duLmx1YSIsWyJmdWxsTmFtZSJdPSJ1;' export '_ModuleTable009_;' '_ModuleTable010_=c2Uub3duIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idXNlLm93biIsfSx6bGliPXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3psaWIvMS4yLjExLTJ5Lmx1YSIsWyJmdWxsTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MyxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsfSx9LG1wYXRoQT17Ii9vcHQvc3cvc2luZ3VsYXJpdHkvbW9kdWxlcyIsIi9vcHQvc3cvb3RoZXIvbW9k;' export '_ModuleTable010_;' '_ModuleTable011_=dWxlZGVwcy9saW51eC1yaGVsOC14ODZfNjRfdjIvZ2NjLTEwLjMuMC1vcGVubXBpLTQuMS4yIiwiL29wdC9zdy9zcGFjay9tb2R1bGVkZXBzL2xpbnV4LXJoZWw4LXg4Nl82NC9nbnUtMTAuMy4wLW9wZW5tcGktNC4xLjIiLCIvb3B0L3N3L290aGVyL21vZHVsZWRlcHMvbGludXgtcmhlbDgteDg2XzY0X3YyL2djYy0xMC4zLjAiLCIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0yMDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wIiwiL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAiLCIvb3B0L3N3L290aGVyL21vZHVsZWZpbGVzIiwiL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcyIsIi9ldGMvbW9kdWxlZmlsZXMv;' export '_ModuleTable011_;' '_ModuleTable012_=Q29yZSIsIi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlIiwiL2hvbWUvend1MjQvcHJpdmF0ZW1vZHVsZXMiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL2V0Yy9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMiLH0=;' export '_ModuleTable012_;' '_ModuleTable_Sz_=12;' export '_ModuleTable_Sz_;'
+[[bash:71] MODULEPATH=/opt/sw/singularity/modules:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0-openmpi-4.1.2:/opt/sw/spack/moduledeps/linux-rhel8-x86_64/gnu-10.3.0-openmpi-4.1.2:/opt/sw/other/moduledeps/linux-rhel8-x86_64_v2/gcc-10.3.0:/opt/sw/spack/modules/lmod-2024/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/spack/modules/lmod/linux-rhel8-x86_64/gcc/10.3.0:/opt/sw/other/modulefiles:/opt/ohpc/pub/modulefiles:/etc/modulefiles/Core:/opt/ohpc/admin/lmod/8.2.10/modulefiles/Core:/home/zwu24/privatemodules
+[[bash:71] export MODULEPATH
+[[bash:71] _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImdudTEwIixbIm1waSJdPSJvcGVubXBpNCIsfSxtVD17YXV0b3Rvb2xzPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvYXV0b3Rvb2xzLmx1YSIsWyJmdWxsTmFtZSJdPSJhdXRvdG9vbHMiLFsibG9hZE9yZGVyIl09Mixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhdXRvdG9vbHMiLH0sYnppcDI9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4z
+[[bash:71] export _ModuleTable001_
+[[bash:71] _ModuleTable002_=LjAvYnppcDIvMS4wLjgtbm8ubHVhIixbImZ1bGxOYW1lIl09ImJ6aXAyLzEuMC44LW5vIixbImxvYWRPcmRlciJdPTkscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImJ6aXAyLzEuMC44LW5vIix9LGN1ZGE9e1siZm4iXT0iL29wdC9zdy9vdGhlci9tb2R1bGVmaWxlcy9jdWRhLzEyLjIuMC4xLmx1YSIsWyJmdWxsTmFtZSJdPSJjdWRhLzEyLjIuMC4xIixbImxvYWRPcmRlciJdPTE4LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImN1ZGEvMTIuMiIsfSxnbGliYz17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0y
+[[bash:71] export _ModuleTable002_
+[[bash:71] _ModuleTable003_=MDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL2dsaWJjLzIuMjgtZm4ubHVhIixbImZ1bGxOYW1lIl09ImdsaWJjLzIuMjgtZm4iLFsibG9hZE9yZGVyIl09MTQscHJvcFQ9e30sWyJyZWZfY291bnQiXT0xLFsic3RhY2tEZXB0aCJdPTEsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdsaWJjLzIuMjgtZm4iLH0sZ251MTA9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9nbnUxMC8xMC4zLjAteWEubHVhIixbImZ1bGxOYW1lIl09ImdudTEwLzEwLjMuMC15YSIsWyJsb2FkT3JkZXIiXT02LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdudTEwIix9LGhvc3RzPXtbImZuIl09
+[[bash:71] export _ModuleTable003_
+[[bash:71] _ModuleTable004_=Ii9ldGMvbW9kdWxlZmlsZXMvQ29yZS9ob3N0cy9ob3BwZXIiLFsiZnVsbE5hbWUiXT0iaG9zdHMvaG9wcGVyIixbImxvYWRPcmRlciJdPTQscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iaG9zdHMvaG9wcGVyIix9LGh3bG9jPXtbImZuIl09Ii9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMvaHdsb2MvMi4xLjAubHVhIixbImZ1bGxOYW1lIl09Imh3bG9jLzIuMS4wIixbImxvYWRPcmRlciJdPTE3LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imh3bG9jLzIuMS4wIix9LGxpYmZhYnJpYz17WyJmbiJdPSIvb3B0L29ocGMvcHViL21vZHVsZWZpbGVzL2xpYmZh
+[[bash:71] export _ModuleTable004_
+[[bash:71] _ModuleTable005_=YnJpYy8xLjEwLjEubHVhIixbImZ1bGxOYW1lIl09ImxpYmZhYnJpYy8xLjEwLjEiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LG9wZW5tcGk0PXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL29wZW5tcGk0LzQuMS4yLTRhLmx1YSIsWyJmdWxsTmFtZSJdPSJvcGVubXBpNC80LjEuMi00YSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im9wZW5tcGk0Iix9LHBydW49e1siZm4iXT0iL29wdC9vaHBjL3B1
+[[bash:71] export _ModuleTable005_
+[[bash:71] _ModuleTable006_=Yi9tb2R1bGVmaWxlcy9wcnVuLzIuMC5sdWEiLFsiZnVsbE5hbWUiXT0icHJ1bi8yLjAiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJwcnVuIix9LHB5dGhvbj17WyJmbiJdPSIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC9weXRob24vMy4xMC4xLTVyLmx1YSIsWyJmdWxsTmFtZSJdPSJweXRob24vMy4xMC4xLTVyIixbImxvYWRPcmRlciJdPTEyLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InB5dGhvbi8zLjEwIix9LHJlYWRsaW5lPXtbImZuIl09Ii9vcHQvc3cvc3Bh
+[[bash:71] export _ModuleTable006_
+[[bash:71] _ModuleTable007_=Y2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3JlYWRsaW5lLzguMS1reS5sdWEiLFsiZnVsbE5hbWUiXT0icmVhZGxpbmUvOC4xLWt5IixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJyZWFkbGluZS84LjEta3kiLH0sc2luZ3VsYXJpdHk9e1siZm4iXT0iL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcy9zaW5ndWxhcml0eS8zLjcuMS5sdWEiLFsiZnVsbE5hbWUiXT0ic2luZ3VsYXJpdHkvMy43LjEiLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5h
+[[bash:71] export _ModuleTable007_
+[[bash:71] _ModuleTable008_=bWUiXT0ic2luZ3VsYXJpdHkiLH0sWyJzbHVybS10b29scyJdPXtbImZuIl09Ii9vcHQvc3cvb3RoZXIvbW9kdWxlZmlsZXMvc2x1cm0tdG9vbHMvMjAyMy0wOSIsWyJmdWxsTmFtZSJdPSJzbHVybS10b29scy8yMDIzLTA5IixbImxvYWRPcmRlciJdPTUscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic2x1cm0tdG9vbHMvMjAyMy0wOSIsfSxzcWxpdGU9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAvc3FsaXRlLzMuMzcuMS02cy5sdWEiLFsiZnVsbE5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInJl
+[[bash:71] export _ModuleTable008_
+[[bash:71] _ModuleTable009_=Zl9jb3VudCJdPTEsWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic3FsaXRlLzMuMzcuMS02cyIsfSx1Y3g9e1siZm4iXT0iL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QtMjAyNC9saW51eC1yaGVsOC14ODZfNjQvZ2NjLzEwLjMuMC91Y3gvMS4xNi4wLXhnLmx1YSIsWyJmdWxsTmFtZSJdPSJ1Y3gvMS4xNi4wLXhnIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InVjeCIsfSxbInVzZS5vd24iXT17WyJmbiJdPSIvb3B0L29ocGMvYWRtaW4vbG1vZC84LjIuMTAvbW9kdWxlZmlsZXMvQ29yZS91c2Uub3duLmx1YSIsWyJmdWxsTmFtZSJdPSJ1
+[[bash:71] export _ModuleTable009_
+[[bash:71] _ModuleTable010_=c2Uub3duIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0idXNlLm93biIsfSx6bGliPXtbImZuIl09Ii9vcHQvc3cvc3BhY2svbW9kdWxlcy9sbW9kL2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wL3psaWIvMS4yLjExLTJ5Lmx1YSIsWyJmdWxsTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsicmVmX2NvdW50Il09MyxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ6bGliLzEuMi4xMS0yeSIsfSx9LG1wYXRoQT17Ii9vcHQvc3cvc2luZ3VsYXJpdHkvbW9kdWxlcyIsIi9vcHQvc3cvb3RoZXIvbW9k
+[[bash:71] export _ModuleTable010_
+[[bash:71] _ModuleTable011_=dWxlZGVwcy9saW51eC1yaGVsOC14ODZfNjRfdjIvZ2NjLTEwLjMuMC1vcGVubXBpLTQuMS4yIiwiL29wdC9zdy9zcGFjay9tb2R1bGVkZXBzL2xpbnV4LXJoZWw4LXg4Nl82NC9nbnUtMTAuMy4wLW9wZW5tcGktNC4xLjIiLCIvb3B0L3N3L290aGVyL21vZHVsZWRlcHMvbGludXgtcmhlbDgteDg2XzY0X3YyL2djYy0xMC4zLjAiLCIvb3B0L3N3L3NwYWNrL21vZHVsZXMvbG1vZC0yMDI0L2xpbnV4LXJoZWw4LXg4Nl82NC9nY2MvMTAuMy4wIiwiL29wdC9zdy9zcGFjay9tb2R1bGVzL2xtb2QvbGludXgtcmhlbDgteDg2XzY0L2djYy8xMC4zLjAiLCIvb3B0L3N3L290aGVyL21vZHVsZWZpbGVzIiwiL29wdC9vaHBjL3B1Yi9tb2R1bGVmaWxlcyIsIi9ldGMvbW9kdWxlZmlsZXMv
+[[bash:71] export _ModuleTable011_
+[[bash:71] _ModuleTable012_=Q29yZSIsIi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlIiwiL2hvbWUvend1MjQvcHJpdmF0ZW1vZHVsZXMiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL2V0Yy9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9hZG1pbi9sbW9kLzguMi4xMC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvb2hwYy9wdWIvbW9kdWxlZmlsZXMiLH0=
+[[bash:71] export _ModuleTable012_
+[[bash:71] _ModuleTable_Sz_=12
+[[bash:71] export _ModuleTable_Sz_
+[[bash:71] : -s sh
+[bash:71] eval
+Mon Mar  9 02:40:21 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.05              Driver Version: 560.35.05      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:01:00.0 Off |                    0 |
+| N/A   28C    P0             60W /  500W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
++ PS4='[container:slurm_script:41] '
+[container:slurm_script:41] trap 'rc=$?; echo "[CONTAINER-ERROR] line=${LINENO} exit_code=${rc}"; exit ${rc}' ERR
+[container:slurm_script:41] export PYTHONUNBUFFERED=1
+[container:slurm_script:41] PYTHONUNBUFFERED=1
+[container:slurm_script:41] cd /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres
+[container:slurm_script:41] python3 -V
+Python 3.8.10
+[container:slurm_script:41] python3 -u scripts/prepare_train_test_1fps.py --output-json /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8.json --max-samples 8
+Wrote 8 samples to /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8.json
+Frame root: /scratch/zwu24/datasets/LLaVA-Video-178K_fps1
+Skip stats: non_dict=0, bad_video_field=0, duplicate_video=21, missing_or_invalid_decoded_frames=0
+First 5 videos:
+  - 0_30_s_academic_v0_1/academic_source/NextQA/1102/3564576864.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/203/Qh_rtJaCpXs/split_6.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/114/uFbAiNoQYQE/split_1.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/303/LaouC0RQoDg/split_8.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/105/uxEhH6MPH28/split_3.mp4
+[container:slurm_script:41] python3 -u pipeline_train_test_1fps.py --train-json /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8.json --frame-root /scratch/zwu24/datasets/LLaVA-Video-178K_fps1 --max-frames 16
+Ragged retriever source verified: /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/ragged_flash_memory_retriever.py
+Loaded samples: 8
+First 5 videos:
+  - 0_30_s_academic_v0_1/academic_source/NextQA/1102/3564576864.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/203/Qh_rtJaCpXs/split_6.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/114/uFbAiNoQYQE/split_1.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/303/LaouC0RQoDg/split_8.mp4
+  - 0_30_s_academic_v0_1/academic_source/youcook2/105/uxEhH6MPH28/split_3.mp4
+Loaded first sample frames from: /scratch/zwu24/datasets/LLaVA-Video-178K_fps1/0_30_s_academic_v0_1/academic_source/NextQA/1102/3564576864
+Tensor shape [T,C,H,W]: (16, 3, 480, 640)
+fullres chunks: 2
+dynamic chunks: 2
+fullres[0] used_size=(480, 640), shape=(8, 3, 480, 640)
+dynamic[0] used_size=(252, 308), shape=(8, 3, 252, 308)
+[container:slurm_script:41] python3 -u scripts/ensure_peft.py
+peft_ready=True
+[container:slurm_script:41] python3 -u finetune_flash.py --model_name_or_path /scratch/zwu24/hfmodels/models--Qwen--Qwen2-VL-7B-Instruct/snapshots/eed13092ef92e448dd6875b2a00151bd3f7db0ac --data_path /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/data/train_test_1fps_8.json --video_path /scratch/zwu24/datasets/LLaVA-Video-178K_fps1 --use_flash_attn True --bf16 True --output_dir /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/train_test_1fps_6533443 --num_train_epochs 1 --per_device_train_batch_size 1 --gradient_accumulation_steps 1 --evaluation_strategy no --save_strategy epoch --save_total_limit 1 --learning_rate 1e-5 --weight_decay 0.0 --warmup_ratio 0.0 --logging_steps 1 --report_to none --model_max_length 16384 --fps 1.0 --max_frames 8 --lazy_preprocess True --use_lora --lora_r 16 --lora_alpha 16 --gradient_checkpointing
+/home/zwu24/.local/lib/python3.8/site-packages/transformers/deepspeed.py:24: FutureWarning: transformers.deepspeed module is deprecated and will be removed in a future version. Please import deepspeed modules directly from transformers.integrations
+  warnings.warn(
+/home/zwu24/.local/lib/python3.8/site-packages/transformers/training_args.py:1545: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+[main] model_name_or_path=/scratch/zwu24/hfmodels/models--Qwen--Qwen2-VL-7B-Instruct/snapshots/eed13092ef92e448dd6875b2a00151bd3f7db0ac
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+[main] Official Qwen checkpoint verified: model_type=qwen2_vl
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/vstream_qwen2vl_realtime.py:492: UserWarning: note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config
+  warnings.warn(f'note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config')
+Set flash_memory_config to {'flash_memory_temporal_length': 120, 'flash_memory_temporal_method': 'kmeans_ordered', 'flash_memory_temporal_poolsize': 2, 'flash_memory_temporal_pca_dim': 32, 'flash_memory_spatial_length': 60, 'flash_memory_spatial_method': 'klarge_retrieve', 'flash_memory_mode': 'ragged', 'flash_memory_budget_target': 11520, 'flash_memory_budget_hard': 12000, 'flash_memory_rt': 0.3333, 'flash_memory_xbin': 64, 'flash_memory_ybin': 64, 'flash_memory_topM_items': 10, 'flash_memory_num_anchors': 8}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+FlashVStreamQwen2VLModel has generative capabilities, as `prepare_inputs_for_generation` is explicitly overwritten. However, it doesn't directly inherit from `GenerationMixin`. From 👉v4.50👈 onwards, `PreTrainedModel` will NOT inherit from `GenerationMixin`, and this model will lose the ability to call `generate` and other related functions.
+  - If you're using `trust_remote_code=True`, you can get rid of this warning by loading the model with an auto class. See https://huggingface.co/docs/transformers/en/model_doc/auto#auto-classes
+  - If you are the owner of the model architecture code, please modify your model class such that it inherits from `GenerationMixin` (after `PreTrainedModel`, otherwise you'll get an exception).
+  - If you are not the owner of the model architecture class, please contact the model code owner to update it.
+You are attempting to use Flash Attention 2.0 without specifying a torch dtype. This might lead to unexpected behaviour
+`Qwen2VLRotaryEmbedding` can now be fully parameterized by passing the model config through the `config` argument. All other arguments will be removed in v4.46
+FlashVStreamQwen2VLModel is initialized
+FlashVStreamQwen2VLModel config:
+FlashVStreamQwen2VLConfig {
+  "_name_or_path": "/scratch/zwu24/hfmodels/models--Qwen--Qwen2-VL-7B-Instruct/snapshots/eed13092ef92e448dd6875b2a00151bd3f7db0ac",
+  "architectures": [
+    "Qwen2VLForConditionalGeneration"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 3584,
+  "image_token_id": 151655,
+  "initializer_range": 0.02,
+  "intermediate_size": 18944,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "flash_vstream_qwen2_vl",
+  "num_attention_heads": 28,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 4,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": {
+    "mrope_section": [
+      16,
+      24,
+      24
+    ],
+    "rope_type": "default",
+    "type": "default"
+  },
+  "rope_theta": 1000000.0,
+  "sliding_window": 32768,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.45.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "video_token_id": 151656,
+  "vision_config": {
+    "flash_memory_config": {
+      "flash_memory_budget_hard": 12000,
+      "flash_memory_budget_target": 11520,
+      "flash_memory_mode": "ragged",
+      "flash_memory_num_anchors": 8,
+      "flash_memory_rt": 0.3333,
+      "flash_memory_spatial_length": 60,
+      "flash_memory_spatial_method": "klarge_retrieve",
+      "flash_memory_temporal_length": 120,
+      "flash_memory_temporal_method": "kmeans_ordered",
+      "flash_memory_temporal_pca_dim": 32,
+      "flash_memory_temporal_poolsize": 2,
+      "flash_memory_topM_items": 10,
+      "flash_memory_xbin": 64,
+      "flash_memory_ybin": 64
+    },
+    "in_chans": 3,
+    "model_type": "qwen2_vl",
+    "spatial_patch_size": 14
+  },
+  "vision_end_token_id": 151653,
+  "vision_start_token_id": 151652,
+  "vision_token_id": 151654,
+  "vocab_size": 152064
+}
+
+FlashMemory config:
+{'flash_memory_temporal_length': 120, 'flash_memory_temporal_method': 'kmeans_ordered', 'flash_memory_temporal_poolsize': 2, 'flash_memory_temporal_pca_dim': 32, 'flash_memory_spatial_length': 60, 'flash_memory_spatial_method': 'klarge_retrieve', 'flash_memory_mode': 'ragged', 'flash_memory_budget_target': 11520, 'flash_memory_budget_hard': 12000, 'flash_memory_rt': 0.3333, 'flash_memory_xbin': 64, 'flash_memory_ybin': 64, 'flash_memory_topM_items': 10, 'flash_memory_num_anchors': 8}
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:01,  2.21it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:00,  3.30it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:00<00:00,  3.97it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  4.16it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:01<00:00,  4.38it/s]
+[main] FlashVStream model weights loaded from official Qwen checkpoint path.
+[main] Ragged retriever backend active: RaggedFlashMemoryRetriever
+[main] target_modules=['model.layers.0.self_attn.q_proj', 'model.layers.0.self_attn.k_proj', 'model.layers.0.self_attn.v_proj', 'model.layers.0.self_attn.o_proj', 'model.layers.0.mlp.gate_proj', 'model.layers.0.mlp.up_proj', 'model.layers.0.mlp.down_proj', 'model.layers.1.self_attn.q_proj', 'model.layers.1.self_attn.k_proj', 'model.layers.1.self_attn.v_proj', 'model.layers.1.self_attn.o_proj', 'model.layers.1.mlp.gate_proj', 'model.layers.1.mlp.up_proj', 'model.layers.1.mlp.down_proj', 'model.layers.2.self_attn.q_proj', 'model.layers.2.self_attn.k_proj', 'model.layers.2.self_attn.v_proj', 'model.layers.2.self_attn.o_proj', 'model.layers.2.mlp.gate_proj', 'model.layers.2.mlp.up_proj', 'model.layers.2.mlp.down_proj', 'model.layers.3.self_attn.q_proj', 'model.layers.3.self_attn.k_proj', 'model.layers.3.self_attn.v_proj', 'model.layers.3.self_attn.o_proj', 'model.layers.3.mlp.gate_proj', 'model.layers.3.mlp.up_proj', 'model.layers.3.mlp.down_proj', 'model.layers.4.self_attn.q_proj', 'model.layers.4.self_attn.k_proj', 'model.layers.4.self_attn.v_proj', 'model.layers.4.self_attn.o_proj', 'model.layers.4.mlp.gate_proj', 'model.layers.4.mlp.up_proj', 'model.layers.4.mlp.down_proj', 'model.layers.5.self_attn.q_proj', 'model.layers.5.self_attn.k_proj', 'model.layers.5.self_attn.v_proj', 'model.layers.5.self_attn.o_proj', 'model.layers.5.mlp.gate_proj', 'model.layers.5.mlp.up_proj', 'model.layers.5.mlp.down_proj', 'model.layers.6.self_attn.q_proj', 'model.layers.6.self_attn.k_proj', 'model.layers.6.self_attn.v_proj', 'model.layers.6.self_attn.o_proj', 'model.layers.6.mlp.gate_proj', 'model.layers.6.mlp.up_proj', 'model.layers.6.mlp.down_proj', 'model.layers.7.self_attn.q_proj', 'model.layers.7.self_attn.k_proj', 'model.layers.7.self_attn.v_proj', 'model.layers.7.self_attn.o_proj', 'model.layers.7.mlp.gate_proj', 'model.layers.7.mlp.up_proj', 'model.layers.7.mlp.down_proj', 'model.layers.8.self_attn.q_proj', 'model.layers.8.self_attn.k_proj', 'model.layers.8.self_attn.v_proj', 'model.layers.8.self_attn.o_proj', 'model.layers.8.mlp.gate_proj', 'model.layers.8.mlp.up_proj', 'model.layers.8.mlp.down_proj', 'model.layers.9.self_attn.q_proj', 'model.layers.9.self_attn.k_proj', 'model.layers.9.self_attn.v_proj', 'model.layers.9.self_attn.o_proj', 'model.layers.9.mlp.gate_proj', 'model.layers.9.mlp.up_proj', 'model.layers.9.mlp.down_proj', 'model.layers.10.self_attn.q_proj', 'model.layers.10.self_attn.k_proj', 'model.layers.10.self_attn.v_proj', 'model.layers.10.self_attn.o_proj', 'model.layers.10.mlp.gate_proj', 'model.layers.10.mlp.up_proj', 'model.layers.10.mlp.down_proj', 'model.layers.11.self_attn.q_proj', 'model.layers.11.self_attn.k_proj', 'model.layers.11.self_attn.v_proj', 'model.layers.11.self_attn.o_proj', 'model.layers.11.mlp.gate_proj', 'model.layers.11.mlp.up_proj', 'model.layers.11.mlp.down_proj', 'model.layers.12.self_attn.q_proj', 'model.layers.12.self_attn.k_proj', 'model.layers.12.self_attn.v_proj', 'model.layers.12.self_attn.o_proj', 'model.layers.12.mlp.gate_proj', 'model.layers.12.mlp.up_proj', 'model.layers.12.mlp.down_proj', 'model.layers.13.self_attn.q_proj', 'model.layers.13.self_attn.k_proj', 'model.layers.13.self_attn.v_proj', 'model.layers.13.self_attn.o_proj', 'model.layers.13.mlp.gate_proj', 'model.layers.13.mlp.up_proj', 'model.layers.13.mlp.down_proj', 'model.layers.14.self_attn.q_proj', 'model.layers.14.self_attn.k_proj', 'model.layers.14.self_attn.v_proj', 'model.layers.14.self_attn.o_proj', 'model.layers.14.mlp.gate_proj', 'model.layers.14.mlp.up_proj', 'model.layers.14.mlp.down_proj', 'model.layers.15.self_attn.q_proj', 'model.layers.15.self_attn.k_proj', 'model.layers.15.self_attn.v_proj', 'model.layers.15.self_attn.o_proj', 'model.layers.15.mlp.gate_proj', 'model.layers.15.mlp.up_proj', 'model.layers.15.mlp.down_proj', 'model.layers.16.self_attn.q_proj', 'model.layers.16.self_attn.k_proj', 'model.layers.16.self_attn.v_proj', 'model.layers.16.self_attn.o_proj', 'model.layers.16.mlp.gate_proj', 'model.layers.16.mlp.up_proj', 'model.layers.16.mlp.down_proj', 'model.layers.17.self_attn.q_proj', 'model.layers.17.self_attn.k_proj', 'model.layers.17.self_attn.v_proj', 'model.layers.17.self_attn.o_proj', 'model.layers.17.mlp.gate_proj', 'model.layers.17.mlp.up_proj', 'model.layers.17.mlp.down_proj', 'model.layers.18.self_attn.q_proj', 'model.layers.18.self_attn.k_proj', 'model.layers.18.self_attn.v_proj', 'model.layers.18.self_attn.o_proj', 'model.layers.18.mlp.gate_proj', 'model.layers.18.mlp.up_proj', 'model.layers.18.mlp.down_proj', 'model.layers.19.self_attn.q_proj', 'model.layers.19.self_attn.k_proj', 'model.layers.19.self_attn.v_proj', 'model.layers.19.self_attn.o_proj', 'model.layers.19.mlp.gate_proj', 'model.layers.19.mlp.up_proj', 'model.layers.19.mlp.down_proj', 'model.layers.20.self_attn.q_proj', 'model.layers.20.self_attn.k_proj', 'model.layers.20.self_attn.v_proj', 'model.layers.20.self_attn.o_proj', 'model.layers.20.mlp.gate_proj', 'model.layers.20.mlp.up_proj', 'model.layers.20.mlp.down_proj', 'model.layers.21.self_attn.q_proj', 'model.layers.21.self_attn.k_proj', 'model.layers.21.self_attn.v_proj', 'model.layers.21.self_attn.o_proj', 'model.layers.21.mlp.gate_proj', 'model.layers.21.mlp.up_proj', 'model.layers.21.mlp.down_proj', 'model.layers.22.self_attn.q_proj', 'model.layers.22.self_attn.k_proj', 'model.layers.22.self_attn.v_proj', 'model.layers.22.self_attn.o_proj', 'model.layers.22.mlp.gate_proj', 'model.layers.22.mlp.up_proj', 'model.layers.22.mlp.down_proj', 'model.layers.23.self_attn.q_proj', 'model.layers.23.self_attn.k_proj', 'model.layers.23.self_attn.v_proj', 'model.layers.23.self_attn.o_proj', 'model.layers.23.mlp.gate_proj', 'model.layers.23.mlp.up_proj', 'model.layers.23.mlp.down_proj', 'model.layers.24.self_attn.q_proj', 'model.layers.24.self_attn.k_proj', 'model.layers.24.self_attn.v_proj', 'model.layers.24.self_attn.o_proj', 'model.layers.24.mlp.gate_proj', 'model.layers.24.mlp.up_proj', 'model.layers.24.mlp.down_proj', 'model.layers.25.self_attn.q_proj', 'model.layers.25.self_attn.k_proj', 'model.layers.25.self_attn.v_proj', 'model.layers.25.self_attn.o_proj', 'model.layers.25.mlp.gate_proj', 'model.layers.25.mlp.up_proj', 'model.layers.25.mlp.down_proj', 'model.layers.26.self_attn.q_proj', 'model.layers.26.self_attn.k_proj', 'model.layers.26.self_attn.v_proj', 'model.layers.26.self_attn.o_proj', 'model.layers.26.mlp.gate_proj', 'model.layers.26.mlp.up_proj', 'model.layers.26.mlp.down_proj', 'model.layers.27.self_attn.q_proj', 'model.layers.27.self_attn.k_proj', 'model.layers.27.self_attn.v_proj', 'model.layers.27.self_attn.o_proj', 'model.layers.27.mlp.gate_proj', 'model.layers.27.mlp.up_proj', 'model.layers.27.mlp.down_proj', 'visual.merger.mlp.0', 'visual.merger.mlp.2']
+Loading data...
+[dataset] total=8 kept=8 skip_missing_video=0 skip_missing_frame_dir=0 skip_empty_or_invalid_frame_dir=0
+Formatting inputs...Skip in lazy mode
+Training data loaded, length=8
+Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+rank:0, start training
+  0%|          | 0/8 [00:00<?, ?it/s]Generating video, video_grid_thw_0=tensor([  4,  80, 136]), video_spatial_grid_thw_0=tensor([  4,  80, 136]), video_temporal_grid_thw_0=tensor([ 4, 40, 68])
+padding 13970 to 16384
+LazySupervisedDataset[6] contains, pixel_values_videos=torch.Size([43520, 1176]), video_grid_thw=tensor([  4,  80, 136])
+Generating video, video_grid_thw_0=tensor([  4,  80, 136]), video_spatial_grid_thw_0=tensor([  4,  80, 136]), video_temporal_grid_thw_0=tensor([ 4, 40, 68])
+padding 14033 to 16384
+LazySupervisedDataset[3] contains, pixel_values_videos=torch.Size([43520, 1176]), video_grid_thw=tensor([  4,  80, 136])
+/usr/local/lib/python3.8/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+ 12%|█▎        | 1/8 [00:23<02:47, 23.88s/it]                                             {'loss': 0.8049, 'grad_norm': 20.203561782836914, 'learning_rate': 8.750000000000001e-06, 'epoch': 0.12}
+ 12%|█▎        | 1/8 [00:23<02:47, 23.88s/it]Generating video, video_grid_thw_0=tensor([ 4, 32, 48]), video_spatial_grid_thw_0=tensor([ 4, 32, 48]), video_temporal_grid_thw_0=tensor([ 4, 16, 24])
+padding 2245 to 16384
+LazySupervisedDataset[0] contains, pixel_values_videos=torch.Size([6144, 1176]), video_grid_thw=tensor([ 4, 32, 48])
+ 25%|██▌       | 2/8 [00:31<01:27, 14.54s/it]                                             {'loss': 1.1472, 'grad_norm': 23.644086837768555, 'learning_rate': 7.500000000000001e-06, 'epoch': 0.25}
+ 25%|██▌       | 2/8 [00:31<01:27, 14.54s/it]Generating video, video_grid_thw_0=tensor([  4,  80, 136]), video_spatial_grid_thw_0=tensor([  4,  80, 136]), video_temporal_grid_thw_0=tensor([ 4, 40, 68])
+padding 13958 to 16384
+LazySupervisedDataset[7] contains, pixel_values_videos=torch.Size([43520, 1176]), video_grid_thw=tensor([  4,  80, 136])
+ 38%|███▊      | 3/8 [00:44<01:08, 13.75s/it]                                             {'loss': 1.543, 'grad_norm': 38.03169631958008, 'learning_rate': 6.25e-06, 'epoch': 0.38}
+ 38%|███▊      | 3/8 [00:44<01:08, 13.75s/it]Generating video, video_grid_thw_0=tensor([  4,  80, 136]), video_spatial_grid_thw_0=tensor([  4,  80, 136]), video_temporal_grid_thw_0=tensor([ 4, 40, 68])
+padding 13978 to 16384
+LazySupervisedDataset[2] contains, pixel_values_videos=torch.Size([43520, 1176]), video_grid_thw=tensor([  4,  80, 136])
+ 50%|█████     | 4/8 [00:59<00:56, 14.08s/it]                                             {'loss': 2.258, 'grad_norm': 36.91871643066406, 'learning_rate': 5e-06, 'epoch': 0.5}
+ 50%|█████     | 4/8 [00:59<00:56, 14.08s/it]Generating video, video_grid_thw_0=tensor([  4,  80, 136]), video_spatial_grid_thw_0=tensor([  4,  80, 136]), video_temporal_grid_thw_0=tensor([ 4, 40, 68])
+padding 13914 to 16384
+LazySupervisedDataset[1] contains, pixel_values_videos=torch.Size([43520, 1176]), video_grid_thw=tensor([  4,  80, 136])
+ 62%|██████▎   | 5/8 [01:13<00:42, 14.29s/it]                                             {'loss': 1.1936, 'grad_norm': 23.80402183532715, 'learning_rate': 3.7500000000000005e-06, 'epoch': 0.62}
+ 62%|██████▎   | 5/8 [01:13<00:42, 14.29s/it]Generating video, video_grid_thw_0=tensor([ 4, 32, 48]), video_spatial_grid_thw_0=tensor([ 4, 32, 48]), video_temporal_grid_thw_0=tensor([ 4, 16, 24])
+padding 2291 to 16384
+LazySupervisedDataset[4] contains, pixel_values_videos=torch.Size([6144, 1176]), video_grid_thw=tensor([ 4, 32, 48])
+ 75%|███████▌  | 6/8 [01:21<00:24, 12.17s/it]                                             {'loss': 1.8602, 'grad_norm': 41.83051300048828, 'learning_rate': 2.5e-06, 'epoch': 0.75}
+ 75%|███████▌  | 6/8 [01:22<00:24, 12.17s/it]Generating video, video_grid_thw_0=tensor([  4,  80, 136]), video_spatial_grid_thw_0=tensor([  4,  80, 136]), video_temporal_grid_thw_0=tensor([ 4, 40, 68])
+padding 13934 to 16384
+LazySupervisedDataset[5] contains, pixel_values_videos=torch.Size([43520, 1176]), video_grid_thw=tensor([  4,  80, 136])
+ 88%|████████▊ | 7/8 [01:34<00:12, 12.19s/it]                                             {'loss': 1.3055, 'grad_norm': 25.135011672973633, 'learning_rate': 1.25e-06, 'epoch': 0.88}
+ 88%|████████▊ | 7/8 [01:34<00:12, 12.19s/it]100%|██████████| 8/8 [01:41<00:00, 10.54s/it]                                             {'loss': 1.2788, 'grad_norm': 34.68861389160156, 'learning_rate': 0.0, 'epoch': 1.0}
+100%|██████████| 8/8 [01:41<00:00, 10.54s/it]You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/vstream_qwen2vl_realtime.py:492: UserWarning: note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config
+  warnings.warn(f'note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config')
+                                             {'train_runtime': 116.8236, 'train_samples_per_second': 0.068, 'train_steps_per_second': 0.068, 'train_loss': 1.4239020124077797, 'epoch': 1.0}
+100%|██████████| 8/8 [01:56<00:00, 10.54s/it]100%|██████████| 8/8 [01:56<00:00, 14.60s/it]
+rank:0, save state
+You are using a model of type qwen2_vl to instantiate a model of type flash_vstream_qwen2_vl. This is not supported for all configurations of models and can yield errors.
+Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/models/vstream_qwen2vl_realtime.py:492: UserWarning: note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config
+  warnings.warn(f'note that vision_config.flash_memory_config is not set. Please set it using set_flash_memory_config')
+rank:0, save whole model to /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/train_test_1fps_6533443
+Model and tokenizer saved to /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/train_test_1fps_6533443
+Chat template saved to /scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/train_test_1fps_6533443/chat_template.json
+[INFO] finished=2026-03-09T02:43:41-04:00 output_dir=/scratch/zwu24/Flash-VStream-highres/Flash-VStream-Qwen-highres/output/train_test_1fps_6533443
